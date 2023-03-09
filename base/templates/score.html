@@ -1,0 +1,545 @@
+{%load static%}
+<!DOCTYPE HTML>
+<!--
+	Miniport by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>LanDis: Compare</title>
+		<meta charset="utf-8" />
+
+		<!-- Miniport imports -->
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="{% static 'javascript/ie/html5shiv.js' %}"></script><![endif]-->
+		<link rel="stylesheet" href="{% static 'css/main.css' %}" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="{% static 'css/ie8.css' %}" /><![endif]-->
+		<!--[if lte IE 9]><link rel="stylesheet" href="{% static 'css/ie9.css' %}" /><![endif]-->
+
+		<!-- visual ui imports -->
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.structure.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.theme.min.css' %}"/>
+		<!-- d3 -->
+        <script src="{% static 'javascript/d3.min.js' %}"></script>
+		<!-- Scripts -->
+        <script src="{% static 'javascript/jquery.min.js' %}"></script>
+        <script src="{% static 'javascript/jquery-ui.js' %} "></script>
+        <script src="{% static 'javascript/jquery.scrolly.min.js' %}"></script>
+        <script src="{% static 'javascript/skel.min.js' %}"></script>
+        <script src="{% static 'javascript/skel-viewport.min.js' %}"></script>
+        <script src="{% static 'javascript/util.js' %}"></script>
+        <!--[if lte IE 8]><script src="{% static 'javascript/ie/respond.min.js' %}"></script><![endif]-->
+        <script src="{% static 'javascript/main.js' %}"></script>
+
+        <!-- intro.js -->
+        <link href="{% static 'css/introjs.css' %}" rel="stylesheet">
+        <script type="text/javascript" src="{% static 'javascript/intro.js' %}"></script>
+
+	<!-- Autocomplete styles -->
+        <style>
+
+            .clip_text{
+                overflow-y:auto;
+                min-height:4em;
+                position:relative;
+                text-align: left;
+                padding:0 0.5em;
+            }
+            /*styling for the hover*/
+            .hover_change{
+                 cursor: pointer; cursor: hand;
+                 float:left;
+            }
+            
+            /*chart*/
+            .bar {
+                fill: steelblue;
+            }
+
+            .bar:hover {
+                fill: brown;
+            }
+
+            .axis {
+                font: 10px sans-serif;
+            }
+
+            .axis path,
+            .axis line {
+                fill: none;
+                stroke: #000;
+                shape-rendering: crispEdges;
+            }
+
+            .x.axis path {
+                display: none;
+            }
+
+            .chart rect {
+                  fill: steelblue;
+              }
+
+            .chart text {
+                  fill: black;
+                  font: 10px sans-serif;
+                  text-anchor: end;
+             }
+
+
+            .chart_container{
+                width:50%;
+                overflow:hidden;
+                margin:auto;
+                position: relative;
+            }
+            .chart_container.ratio16x9:before{
+                content: "";
+                display: block;
+                padding-top: 56.25%; 	/* initial ratio of 16:9*/
+            }
+            .chart{
+                position:  absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+            }
+
+             
+			/*controls to hide partial mesh lists*/
+
+            .firstletter{
+            	width:100%;
+                /*font-weight: bold;*/
+                background-color:#ccc;
+                text-align:left;
+                text-shadow:none;
+                color: #000;
+                /*border-radius:5px;*/
+                border-top-left-radius:5px;
+                border-top-right-radius:5px;
+                border-bottom-left-radius:0px;
+                border-bottom-right-radius:0px;
+                padding:0 5px;
+                margin-top:5px;
+            }
+            .firstletter:hover{
+                background-color:#eee;
+            }
+            .firstletter i{
+                padding:6px ;
+                float:right;
+            }
+            .meshcontent{
+                overflow:hidden;
+                background-color:#eee;
+                padding:5px;
+                border-bottom-left-radius:5px;
+                border-bottom-right-radius:5px;
+            }
+            .meshparent{
+                overflow:hidden;
+                /*float:left;*/
+            }
+            .meshparent.collapsed .firstletter{
+                border-bottom-left-radius:5px;
+                border-bottom-right-radius:5px;
+            }
+            .meshparent.collapsed .meshcontent{
+                /*border:none;*/
+                padding:0px;
+                height:0px;
+            }
+            .meshgroup{
+                overflow:hidden;
+            }
+            .cont{
+                overflow:hidden;
+            }
+        </style>
+
+	<!-- on ready Jquery -->
+
+	<script type = "text/javascript">
+
+
+            $(document).ready(function() {
+
+            $("#more_info").hide();
+
+            $('#more_info_toggle').click(function(){
+                //move the thing.
+                $("#more_info").slideToggle();
+                //change the icon
+                if(!$('#more_info').is(':visible'))
+                {
+                    //remove minus add plus
+                    $("#more_info_toggle").toggleClass("fa fa-minus-square-o");
+                    $("#more_info_toggle").toggleClass("fa fa-plus-square-o");
+                }
+                else
+                {
+                    //remove plus add minus
+                    $("#more_info_toggle").toggleClass("fa fa-plus-square-o");
+                    $("#more_info_toggle").toggleClass("fa fa-minus-square-o");
+                }
+            });
+
+            //controls for toggling of meshterms.
+            var toggleMinHeight = 0,
+                duration = 500,
+                easing = 'swing';
+
+            $('.meshparent .firstletter').each(
+                function(){
+                    var elementId = $(this).parents('.meshparent').find('.meshcontent');
+                    elementId.attr('data-height',elementId.outerHeight());
+                }).click(
+                function(){
+                    var elementId = $(this).parents('.meshparent').find('.meshcontent');
+                    var curH = elementId.height();
+                    if (elementId.is(':animated')){
+                        return false;
+                    }
+
+                    else if (curH > toggleMinHeight) {
+                        elementId.animate(
+                            {
+                               'height' : toggleMinHeight,
+                               'padding': '0px'
+                            }, duration, easing,function(){
+		                        $(this).find('i').removeClass('fa-caret-up');
+				                $(this).find('i').addClass('fa-caret-down');
+				                $(this).parents('.meshparent').addClass('collapsed');
+				                $(this).parents('.meshparent').removeClass('expanded');
+                            });
+                    }
+                    else if (curH == toggleMinHeight){
+                        elementId.animate(
+                            {
+                                'height' : elementId.attr('data-height'),
+                                'padding': '5px'
+                            }, duration, easing, function(){
+				                $(this).find('i').removeClass('fa-caret-down');
+					            $(this).find('i').addClass('fa-caret-up');
+					            $(this).parents('.meshparent').addClass('expanded');
+					            $(this).parents('.meshparent').removeClass('collapsed');
+                            });
+                    }
+                });
+                $(".meshparent").addClass("collapsed");
+            //------
+
+
+                //start the tooltip
+                $(function() {
+                    $( document ).tooltip();
+                });
+                //###### the barchart ########
+                var selected_sim = {{similarity}};
+
+                var margin = {top: 20, right: 20, bottom: 50, left: 40},
+                    width = $("#chart").width() - margin.left - margin.right,
+                    height = $("#chart").height() - margin.top - margin.bottom;
+
+                var x = d3.scale.ordinal()
+                    .rangeRoundBands([0, width], .1);
+
+                var y = d3.scale.linear()
+                    .range([height, 0]);
+
+
+             var formatLabel = function(d) {
+                    var left = Math.ceil((d-0.1)*10) / 10;
+                    var right = Math.ceil((parseFloat(d) + 0.1) * 10)/10;
+                    var full = left + "-" + right;
+                    return (full);
+                 }
+
+             var xAxis = d3.svg.axis()
+                 .scale(x)
+                 .orient("bottom")
+                 .tickFormat(formatLabel);
+                
+
+             var yAxis = d3.svg.axis()
+                 .scale(y)
+                 .orient("left")
+                 .ticks(20, '%');
+
+             var svg = d3.select("#chart").append("svg")
+                 .attr("width", width + margin.left + margin.right)
+                 .attr("height", height + margin.top + margin.bottom)
+                  .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                d3.csv("{% static 'files/histogram' %}", type, function(error, data) {
+
+                  x.domain(data.map(function(d) { return d.bucket; }));
+                  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+                  svg.append("g")
+                      .attr("class", "x axis")
+                      .attr("transform", "translate(0," + height + ")")
+                      .call(xAxis)
+                      .selectAll("text")  
+                          .style("text-anchor", "end")
+                          .attr("dx", "-.8em")
+                          .attr("dy", ".15em")
+                          .attr("transform", function(d) {
+                                          return "rotate(-65)" 
+                              });
+
+
+                  svg.append("g")
+                      .attr("class", "y axis")
+                      .call(yAxis);
+
+
+                  svg.selectAll(".bar")
+                      .data(data)
+                      .enter().append("rect")
+                      .style("class", "bar")
+                      .style("fill", function(d) { 
+                          if (d.bucket > selected_sim - 0.1 && d.bucket< selected_sim + 0.1)
+                          {
+                               svg.append("circle")
+                                  .attr("cx", x(d.bucket) + x(0.1)-2)
+                                  .attr("cy", y(d.value) - 15).attr("r", 4)
+                                  .style("fill", 'brown');
+                               return "brown";
+                          }
+                          return "steelblue"; 
+                      })
+                      .attr("x", function(d) { return x(d.bucket); })
+                      .attr("width", x.rangeBand())
+                      .attr("y", function(d) { return y(d.value); })
+                      .attr("height", function(d) { return height - y(d.value); });
+
+                });
+
+                function type(d) {
+                  d.value = +d.value; // coerce to number
+                  return d;
+
+                }
+
+                //message boxes to explain the file formats.
+                $( ".dialog" ).dialog({ 
+                    resizable: false,
+                    autoOpen: false ,
+                    draggable: false,
+                    width: 500,
+                    maxWidth: 300,
+                    minWidth: 300,
+                    buttons: [
+                     {
+                         text: "Close",
+                         click: function() {
+                             $( this ).dialog( "close" );
+                         }
+                     }
+                     ]
+                });
+
+                //open dialog for explanation about the chart.
+                $( "#chart_explanation" ).click(function() {
+                    $( "#dialog_chart_explanation").dialog( "open" );
+                    });
+                if ($("#first_disease .disease_name").css("height")<$("#second_disease .disease_name").css("height"))
+                {
+                    $("#first_disease .disease_name").css("height",$("#second_disease .disease_name").css("height"));
+                }else{
+                    $("#second_disease .disease_name").css("height",$("#first_disease .disease_name").css("height"));
+                }
+        });//document.ready
+
+
+        </script>
+
+	</head>
+	<body>
+
+		<!-- Nav -->
+			<nav id="nav">
+				<ul class="container">
+                    <li><a href="{% url 'index' %}#home">Home</a></li>
+					<li><a href="{% url 'index' %}#explore">Explore</a></li>
+                    <li><a href="{% url 'index' %}#search">Search</a></li>
+					<li><a href="{% url 'index' %}#compare">Compare</a></li>
+					<li><a href="{% url 'index' %}#download">Download</a></li>
+					<li><a href="{% url 'index' %}#about">About</a></li>
+				</ul>
+			</nav>
+		<!-- Home -->
+			<div class="wrapper style1 first">
+				<article class="container" id="search">
+					<div class="row">
+						<div class="12u">
+							<header>
+								<h2>Compare</h2>
+							</header>
+						</div>
+					</div>
+					<div class="row">
+						<div class="5u 6u(mobile)">
+							<p id="first_disease_label" class="clip_text box">{{ name_disease_A }} ({{disease_A}})</p>
+						</div>
+						<div class="2u 12u(mobile)">
+							<h4 id="similarity_label"> 
+								<span style="white-space:nowrap;">{{similarity|floatformat:3}}</span>
+								<span style="white-space:nowrap;">({{percentile}} percentile)</span> 
+							</h4>
+						</div>	
+						<div class="5u 6u(mobile)">
+							<p id="second_disease_label" class="clip_text box">{{ name_disease_B }} ({{disease_B}})</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+
+                            <div class="chart_container ratio16x9">
+                                <div id="chart" class="chart"></div>
+                            </div>
+
+                            <i style="cursor:hand;cursor:pointer;" class="fa fa-plus-square-o" id="more_info_toggle"></i> This plot
+
+                            <div id="more_info">
+                                <p style="text-align:left;">
+                                    This is the histogram of the similarity scores. The height of the bar represents the
+                                    percentage of disease pairs with a similarity score in the corresponding range. 
+                                    The similarity score for the chosen pair of diseases is located in the red
+                                    bar, below the red circle. Since some bars are very short, <i>i.e.</i> 
+                                    for high similarity values, we have placed this red dot to help locate them.
+                                <p>
+                            </div>
+						</div>
+					</div>					
+				</article>
+            </div>
+
+		<!-- Table Search -->
+			<div class="wrapper style2">
+				<article id="search">
+					<div class="container">
+						<div class="row">
+							<div class="12u">
+								<header><h2>Details</h2></header>
+							</div>
+						</div>
+						<div class="row">
+							<div class="6u 12u(mobile)">
+								<div id="first_disease">
+                                    <div class="cont">
+                                        <p class="disease_name"> {{name_disease_A}} ({{disease_A}})
+                                            <a href="{% url 'explore' disease_A %}" target="_blank"><i class="fa fa-eye" title="Explore (opens in new tab)"></i></a>
+                                            <a href="http://www.omim.org/{{disease_A}}" target="_blank"><i class="fa fa-link" title="Go to OMIM (opens in new tab)"></i></a>
+                                        </p>
+                                        <h4>MeSH terms </h4>
+                                        <div class="meshgroup">
+                                        {% for first_letter, value in A_mesh%}
+                                           <div class="meshparent">
+                                               <div class="firstletter hover_change">
+                                                   {{first_letter}} ({{ value|length }}) <i class="fa fa-caret-down hover_change"></i>
+                                               </div>
+                                               <div class="meshcontent">
+                                               {% for mesh in value %}
+                                                    <a class="button_link" target="_blank" href="{{mesh.1}}">{{mesh.0}}</a>
+                                               {% endfor %}
+                                               </div>
+                                           </div>
+                                           {%endfor%}
+                                        </div><!-- meshgroup -->
+										{% if A_proteins|length == 0 %}
+											<h6>No proteins found</h6>
+										{% else %}
+                                            <h4>Known proteins  ({{ A_proteins|length }})</h4>
+											{% for row in A_proteins %}
+                                                <a class="button_link" target="_blank" href="http://www.uniprot.org/uniprot/{{row}}">{{row}}</a>
+                                            {%endfor%}
+										{% endif %}
+                                    </div><!-- cont -->
+                                </div><!-- first disease -->
+							</div><!-- 6u col -->
+							<div class="6u 12u(mobile)">
+								<div id="second_disease">
+                                    <div class="cont">
+                                        <p class="disease_name"> {{name_disease_B}} ({{disease_B}})
+                                            <a href="{% url 'explore' disease_B %}" target="_blank"><i class="fa fa-eye" title="Explore (opens in new tab)"></i></a>
+                                            <a href="http://www.omim.org/{{disease_B}}" target="_blank"><i class="fa fa-link" title="Go to OMIM (opens in new tab)"></i></a>
+                                        </p>
+                                        <h4>MeSH terms</h4>
+                                        
+                                        <div class="meshgroup">
+                                        {% for first_letter, value in B_mesh%}
+                                           <div class="meshparent">
+                                               <div class="firstletter hover_change">
+                                                   {{first_letter}} ({{ value|length }}) <i class="fa fa-caret-down hover_change"></i>
+                                               </div>
+                                               <div class="meshcontent">
+                                               {% for mesh in value %}
+                                                    <a class="button_link" target="_blank" href="{{mesh.1}}">{{mesh.0}}</a>
+                                               {% endfor %}
+                                               </div>
+                                           </div>
+                                           {%endfor%}
+                                        </div><!-- meshgroup -->
+										{% if B_proteins|length == 0 %}
+											<h6>No proteins found</h6>
+										{% else %}
+                                            <h4>Known proteins ({{ B_proteins|length }}) </h4>
+											{% for row in B_proteins %}
+											<a class="button_link" target="_blank" href="http://www.uniprot.org/uniprot/{{row}}">{{row}}</a>
+											{%endfor%}
+				
+										{% endif %}
+                                    </div><!-- cont -->
+                                </div><!-- first disease -->
+							</div><!-- 6u col -->
+						</div><!-- row -->
+					</div><!-- container -->
+				</article>
+
+                        <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+			</div>
+
+
+		<!-- Contact -->
+        <!--			<div class="wrapper style4">
+				<article id="contact" class="container 75%">
+					<div class="row">
+						<div class="12u">
+							<header>
+								<h2>Contact Information</h2>
+							</header>
+						</div>
+					</div>
+					<div class="row">
+						<div class="4u 12u(mobile)">
+							<a href="http://www.cs.rhul.ac.uk"><img src="{% static 'images/rhullogo.png' %}" alt="RHUL logo"/></a>
+						</div>
+						<div class="4u 12u(mobile)">
+								<p>Department of Computer Science<br/>
+								Royal Holloway, University of London<br/>
+								TW20 0EX, Egham, Surrey<br/>
+								United Kingdom</p>
+						</div>
+						<div class="4u 12u(mobile)">
+							<a href="http://www.paccanarolab.org"><img src="{% static 'images/paccanarolab-white.png' %}" alt="Paccanarolab logo" style="max-width:200px;"/></a>
+						</div>
+					</div>
+					<div>
+
+					</div>
+					<footer>
+						<ul id="copyright">
+							<li>&copy; Disimweb - The disease similarity browser. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</footer>
+				</article>-->
+			</div>
+
+	</body>
+</html>

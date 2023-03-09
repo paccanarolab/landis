@@ -1,0 +1,282 @@
+{%load static%}
+<!DOCTYPE HTML>
+<!--
+	Miniport by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>LanDis: Search</title>
+		<meta charset="utf-8" />
+
+		<!-- Miniport imports -->
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="{% static 'javascript/ie/html5shiv.js' %}"></script><![endif]-->
+		<link rel="stylesheet" href="{% static 'css/main.css' %}" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="{% static 'css/ie8.css' %}" /><![endif]-->
+		<!--[if lte IE 9]><link rel="stylesheet" href="{% static 'css/ie9.css' %}" /><![endif]-->
+
+		<!-- visual ui imports -->
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.structure.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.theme.min.css' %}"/>
+		<!-- Scripts -->
+
+        <script src="{% static 'javascript/jquery.min.js' %}"></script>
+        <script src="{% static 'javascript/jquery-ui.js' %} "></script>
+        <script src="{% static 'javascript/jquery.scrolly.min.js' %}"></script>
+        <script src="{% static 'javascript/skel.min.js' %}"></script>
+        <script src="{% static 'javascript/skel-viewport.min.js' %}"></script>
+        <script src="{% static 'javascript/util.js' %}"></script>
+        <!--[if lte IE 8]><script src="{% static 'javascript/ie/respond.min.js' %}"></script><![endif]-->
+        <script src="{% static 'javascript/main.js' %}"></script>
+
+        <!-- intro.js -->
+        <link href="{% static 'css/introjs.css' %}" rel="stylesheet">
+        <script type="text/javascript" src="{% static 'javascript/intro.js' %}"></script>
+
+	<!-- Autocomplete styles -->
+        <style>
+            tr:nth-child(even) {background: #F5F5F5}
+            tr:nth-child(odd) {background: white}
+            /*styling for the hover*/
+            .hover_change{
+                 cursor: pointer; cursor: hand;
+                 float:left;
+            }
+            .ui-autocomplete { height: 200px; overflow-y: scroll; overflow-x: hidden;}
+            .fill{ width:100%; }
+            
+        </style>
+
+	<!-- on ready Jquery -->
+
+	<script>
+
+            function download(filename, text) {
+                //ajax cal lhere.
+            }
+
+           function startIntro(){
+                var intro = introJs();
+                  intro.setOptions({
+                    steps: [
+                      { 
+                          intro: 'We have prepared this small guide to help you navigate this page. Click "Next" to navigate through the tutorial or click "Skip" to close it. <br> This page compares a disease to the 100 most similar diseases. Results are presented as a table with the following columns:<ol><li>1. Order of the diseases based on the similarity score</li><li>2. OMIM identifier of the diseases</li><li>3. Name of the diseases</li><li>4. Similarity score</li><li>4. Known disease proteins associated to the disease</li></ol>'
+                      },
+                      { 
+                          element: document.querySelector('#download_table'), 
+                          intro: 'Clicking on this button will download the table below'},
+                    ]
+                  });
+
+                  intro.setOption('tooltipPosition', 'auto');
+                  intro.start();
+              }
+
+        $(function() {
+            $( document ).tooltip();
+        });
+
+		$(document).ready(function() {
+            /*** To search in this same website. Now disabled
+                $( "#disease_search" ).autocomplete({ 
+                    "delay": 0, 
+                    "minLength": 2, 
+                    "select": function( event, ui ) {
+                        $("#disease_search_hidden" ).val( ui.item.value);
+                        $("#disease_search" ).val( ui.item.label);
+                        return false;
+                    },
+                    "source": function(request, response) { 
+                        $.ajax({ 
+                            url: "{% url 'get_entities' %}",  
+                            dataType: "json", 
+                            data: { 
+                                term: request.term, 
+                            }, 
+                            success: function(data) { 
+                                response(data); 
+                            } ,
+                            error: function(data, status, xhr) {
+                                console.log(data);
+                                alert('Something has gone wrong. Please click OK and try again');
+                            },
+                        }); 
+                    }, 
+
+                }); 
+                $("#searchForm").submit(function(e){
+                    window.location.href = "/landis/table/"+$("#disease_search_hidden").val();
+                    return false;
+                });
+            */
+
+        });
+        </script>
+
+	</head>
+	<body>
+
+		<!-- Nav -->
+
+			<nav id="nav">
+				<ul class="container">
+                    <li><a href="{% url 'index' %}#home">Home</a></li>
+					<li><a href="{% url 'index' %}#explore">Explore</a></li>
+                    <li><a href="{% url 'index' %}#search">Search</a></li>
+					<li><a href="{% url 'index' %}#compare">Compare</a></li>
+					<li><a href="{% url 'index' %}#download">Download</a></li>
+					<li><a href="{% url 'index' %}#about">About</a></li>
+				</ul>
+			</nav>
+
+		<!-- Home -->
+<!--			<div class="wrapper style1 first">
+				<article class="container" id="search">
+					<div class="row">
+						<div class="12u">
+							<header>
+								<h2>Table Search!</h2>
+								<p>You can query another disease in the search box</p>
+							</header>
+						</div>
+					</div>
+					<form id="searchForm">
+						<div class="row">
+							<div class="12u">
+                            	<input class = "autocomplete_box" id="disease_search" required="" placeholder="Disease name" name="disease_search" type="text" size="40" value="{{ disease_name }}({{ disease_omim }})"/>
+							</div>
+                            <input id="disease_search_hidden"  type="hidden" value="114480"/>
+						</div>
+						<div class="row 200%">
+							<div class="12u">
+								<ul class="actions">
+					                <li><input type="submit" value="Search"/></li>
+								</ul>
+							</div>
+						</div>
+                    </form>
+				</article>
+            </div>-->
+
+		<!-- Table Search -->
+			<div class="wrapper style2">
+				<article id="search">
+					<div class="container">
+						<div class="row">
+							<div class="12u">
+								<header>
+									<h2>{{ disease_name }} ({{ disease_omim }})
+                                        <a href="{% url 'explore' disease_omim %}" target="_blank"><i class="fa fa-eye" title="Explore this disease. Opens in new tab."></i></a>
+	                                <a href="http://www.omim.org/{{disease_omim}}" target="_blank"><i class="fa fa-external-link" title="Go to OMIM. Opens in new tab"></i></a></td>
+                            </h2>
+								</header>
+
+							</div>
+						</div>
+                                                <div class="row uniform">
+                                                    <div class="1u 6u(mobile)">
+                                                        <a href="#" onclick="startIntro();"><i id="tutorial" class="fa fa-info-circle fa-2x hover_change fill" title='Brief tutorial on how to use this page'></i></a>Tutorial
+                                                    </div>
+                                                    <div class="10u 0u(mobile)"></div>
+                                                    <div class="1u 6u(mobile)">
+                                                        <a href="#" onclick="window.open('{% url 'download_table' disease_omim %}', '_blank');"><i id="download_table" class="fa fa-download fa-2x hover_change fill" id='download_table' title='Download the table of similarities'></i></a>Download
+                                                    </div>
+                                                </div>
+
+							<div class="12u">
+						        <table class="default" id="diseases">
+									<thead>
+										<th width="3%" style="text-align:center"> </th>
+										<th width="9%" style="text-align:center"> </th>
+										<th width="45%" style="text-align:center"> </th>
+										<th width="5%" style="text-align:center"> </th>
+										<th width="38%" style="text-align:center"> </th>
+                                                                        </thead>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <td><strong>Order</strong></td>
+                                                                    <td><strong>OMIM number</strong></td>
+                                                                    <td><strong>Name</strong></td>
+                                                                    <td><strong>Similarity score</strong></td>
+                                                                    <td><strong>Disease proteins</strong></td>
+                                                                </tr>
+                                                            {% for omim,name,sim,proteins in table%}
+										<tr> 
+                                        <td> {{forloop.counter}}</td>
+                                        <!-- 
+                                            <textarea name="text" style="display:none" id="file"></textarea>
+                                            komim is the copmared disease
+                                            disease_omim is the explored disease
+                                        -->
+                                        <td style="text-align:left;"> 
+                                            <a href="{% url 'table' omim %}" target="_self">{{omim}}</a> 
+                                            <a href="{% url 'score' disease_omim omim %}" target="_blank"><i class="fa fa-compress" title="Compare {{disease_omim}} to {{omim}}."></i></a>
+                                            <a href=".{%url 'explore' omim %}" target="_blank"><i class="fa fa-eye"title="Explore this disease. Opens in new tab"></i></a>
+                                            <a href="http://www.omim.org/{{omim}}" target="_blank"><i class="fa fa-external-link" title="Go to OMIM. Opens in new tab"></i></a>
+                                        </td>
+                                        <td style="text-align:left;"> {{name}}</td>
+                                        <td style="text-align:left;"> {{sim | floatformat:-2}} </td>
+					<td style="text-align:left;">
+
+                                            {% if proteins|length > 0 %}
+                                                {%for protein in proteins%}  
+                                                    {{protein}}<a target="_blank" href="http://www.uniprot.org/uniprot/{{protein}}"><i class="fa fa-external-link" title="Go to UniProt. Opens in new tab."></i></a>
+                                                {%endfor%}
+                                            {%else%}
+                                                No known proteins.
+                                            {%endif%}
+										</td>
+										</tr>
+
+										{%endfor%}
+
+									</tfoot>
+								</table>
+							</div>
+						</div>
+					</div>
+				</article>
+                        <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+			</div>
+
+
+		<!-- Contact -->
+        <!--			<div class="wrapper style4">
+				<article id="contact" class="container 75%">
+					<div class="row">
+						<div class="12u">
+							<header>
+								<h2>Contact Information</h2>
+							</header>
+						</div>
+					</div>
+					<div class="row">
+						<div class="4u 12u(mobile)">
+							<a href="http://www.cs.rhul.ac.uk"><img src="{% static 'images/rhullogo.png' %}" alt="RHUL logo"/></a>
+						</div>
+						<div class="4u 12u(mobile)">
+								<p>Department of Computer Science<br/>
+								Royal Holloway, University of London<br/>
+								TW20 0EX, Egham, Surrey<br/>
+								United Kingdom</p>
+						</div>
+						<div class="4u 12u(mobile)">
+							<a href="http://www.paccanarolab.org"><img src="{% static 'images/paccanarolab-white.png' %}" alt="Paccanarolab logo" style="max-width:200px;"/></a>
+						</div>
+					</div>
+					<div>
+
+					</div>
+					<footer>
+						<ul id="copyright">
+							<li>&copy; Disimweb - The disease similarity browser. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</footer>
+				</article>-->
+			</div>
+
+	</body>
+</html>

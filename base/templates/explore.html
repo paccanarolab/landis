@@ -1,0 +1,1573 @@
+{%load static%}
+<!DOCTYPE HTML>
+<!--
+	Miniport by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>LanDis: Explore </title>
+		<meta charset="utf-8" />
+
+		<!-- Miniport imports -->
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="{% static 'javascript/ie/html5shiv.js' %}"></script><![endif]-->
+        <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="{% static 'css/ie8.css' %}" /><![endif]-->
+		<!--[if lte IE 9]><link rel="stylesheet" href="{% static 'css/ie9.css' %}" /><![endif]-->
+
+        <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+		<!-- Jquery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+        <script src="{% static 'javascript/jquery-ui.js' %} "></script>
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.structure.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.theme.min.css' %}"/>
+
+        <script src="{% static 'javascript/jquery.scrolly.min.js' %}"></script>
+        <script src="{% static 'javascript/skel.min.js' %}"></script>
+        <script src="{% static 'javascript/skel-viewport.min.js' %}"></script>
+        <script src="{% static 'javascript/util.js' %}"></script>
+        <script src="{% static 'javascript/base64ToBlob.js' %}"></script>
+        <script src="{% static 'javascript/FileSaver.js' %}"></script>
+        <!--fontawesome-->
+        <!--[if lte IE 8]><script src="{% static 'javascript/ie/respond.min.js' %}"></script><![endif]-->
+        <script src="{% static 'javascript/main.js' %}"></script>
+
+        <script type="text/javascript" src="{% static 'javascript/Cytoscape/cytoscape.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/Cytoscape/springy.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/Cytoscape/cytoscape-springy.js' %}"></script>
+
+        <!-- panzoom -->
+        <link rel="stylesheet" href="{% static 'css/panzoom.css' %}">
+        <script type="text/javascript" src="{% static 'javascript/Cytoscape/cytoscape.js-panzoom.js' %}"></script>
+        <!-- intro.js -->
+        <link href="{% static 'css/introjs.css' %}" rel="stylesheet">
+        <script type="text/javascript" src="{% static 'javascript/intro.js' %}"></script>
+		<!-- blockui -->
+		<script type="text/javascript" src="{% static 'javascript/blockui.js' %}"></script>
+
+	<!-- Autocomplete styles -->
+
+    <style>
+        .onoffswitch {
+            position: relative; width: 90px;margin:auto;
+            -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+        }
+        .onoffswitch-checkbox {
+            display: none;
+        }
+        .onoffswitch-label {
+            display: block; overflow: hidden; cursor: pointer;
+            border: 2px solid #999999; border-radius: 20px;
+        }
+        .onoffswitch-inner {
+            display: block; width: 200%; margin-left: -100%;
+            transition: margin 0.3s ease-in 0s;
+        }
+        .onoffswitch-inner:before, .onoffswitch-inner:after {
+            display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
+            font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+            box-sizing: border-box;
+        }
+        .onoffswitch-inner:before {
+            content: "ON";
+            padding-left: 10px;
+            background-color: #43b3e0; 
+            color: #FFFFFF;
+        }
+        .onoffswitch-inner:after {
+            content: "OFF";
+            padding-right: 10px;
+            background-color: #EEEEEE; color: #999999;
+            text-align: right;
+        }
+        .onoffswitch-switch {
+            display: block; width: 18px; margin: 6px;
+            background: #FFFFFF;
+            position: absolute; top: 0; bottom: 0;
+            right: 56px;
+            border: 2px solid #999999; border-radius: 20px;
+            transition: all 0.3s ease-in 0s; 
+        }
+        .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+            margin-left: 0;
+        }
+        .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+            right: 0px; 
+        }
+
+
+    </style>
+        <style>
+
+        /*styling for the hover*/
+        .hover_change{
+             cursor: pointer; cursor: hand;
+             float:left;
+        }
+
+        .ui-autocomplete { 
+            height: 200px; 
+            overflow-y: scroll; 
+            overflow-x: hidden;
+        }
+
+		.center{
+			text-align:center;
+			margin:auto;
+		}
+		.fill{
+			width:100%;
+		}
+
+		.hover_change{
+		 	cursor: pointer; 
+			cursor: hand;
+			float:none;
+		}
+
+		.graph_container{
+			width:100%;
+			position: relative;
+		}
+		.graph_container.ratio16x9:before{
+			content: "";
+			display: block;
+			padding-top: 56.25%; 	/* initial ratio of 16:9*/
+		}
+		.graph{
+			position:  absolute;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			background-color:#ddd;
+		}
+		.graph canvas{
+			left:0;
+		}
+		
+		/* Style for graph helper tools */
+		.component{
+			overflow:hidden;
+			width:90%;
+			float:left;
+			position:relative;
+			margin:0 5px;
+		}
+		.component.slim_fit{
+			width:initial;
+			margin:0;
+			float:none;
+			overflow:visible;
+		}
+		.component > p{
+			margin-bottom:0.5em;
+		}
+		.component > select{
+			width:100%;
+		}
+		.component .fa-question-circle{
+			position:absolute;
+			right:0;
+		}
+		.component .update_locked{
+			cursor:default;
+			pointer-events:none;
+			color:Gray;
+		}
+		.component i{
+			cursor:pointer;
+			color:#43b3e0;
+		}
+		.component i:hover{
+			color:Teal;
+		}
+		.component .disease_locked,.small_component.disease_locked{
+			cursor:default;
+			pointer-events:fill;
+			color:Gray;
+        }	
+
+		.component .disease_locked:hover,.small_component.disease_locked:hover{
+			cursor:default;
+			pointer-events:fill;
+			color:Gray;
+        }	
+
+        .clip_text{
+            overflow-y:auto;
+            height:4em;
+            position:relative;
+            text-align: left;
+            padding:0 0.5em;
+        }
+        .small_component{
+        	float:left;
+           	margin:0.2em 0.4em;
+        }
+        i.small_component{
+			cursor:pointer;
+			color:#43b3e0;
+		}
+		i.small_component:hover{
+			color:Teal;
+		}
+		/*controls to hide partial mesh lists*/
+
+        .firstletter{
+        	width:100%;
+            font-weight: bold;
+            background-color:#ccc;
+            /*border-radius:5px;*/
+            border-top-left-radius:5px;
+            border-top-right-radius:5px;
+            border-bottom-left-radius:0px;
+            border-bottom-right-radius:0px;
+            padding:0 5px;
+            margin-top:5px;
+        }
+        .firstletter:hover{
+            background-color:#eee;
+        }
+        .firstletter i{
+            padding:6px ;
+            float:right;
+        }
+        .meshcontent{
+            overflow:hidden;
+            background-color:#eee;
+            padding:5px;
+            border-bottom-left-radius:5px;
+            border-bottom-right-radius:5px;
+        }
+        .meshparent{
+            overflow:hidden;
+            /*float:left;*/
+        }
+        .meshparent.collapsed .firstletter{
+            border-bottom-left-radius:5px;
+            border-bottom-right-radius:5px;
+        }
+        .meshparent.collapsed .meshcontent{
+            /*border:none;*/
+            padding:0px;
+            height:0px;
+        }
+        .meshgroup{
+            overflow:hidden;
+        }
+        .cont{
+            overflow:hidden;
+        }
+	</style>
+    
+	<script>
+        var normalNetwork = "";
+        var fullNetwork = "";
+        var debug,debug2,debug3;
+		var cy;
+        //stores the regular network
+        var networkJson;
+        //stores the complete network.
+        var networkJsonFull;
+        var query_disease  = '{{omim}}';
+        var URL = '{{URL}}';
+        var URL_fill = '{{URL_fill}}';
+		//variables to change disease
+		var new_query_disease_mim=false;
+		var new_query_disease_name=false;
+		//variables of level elements
+		var current_first_level_elements=0;
+		var current_second_level_elements=0;
+
+           //prepare for the intro js.
+           function startIntro(){
+                var intro = introJs();
+                  intro.setOptions({
+                    steps: [
+                      { 
+                           intro: 'Hello and welcome to the Explorer. We have prepared a comprehensive 17 step guide to using the explorer. Click "Next" to navigate through the tutorial or click "Skip" to close it. <br><strong>1 minute guide:</strong><br> This page allows you to explore the "neighbourhood" of a target disease. <ul style="margin-bottom:0px"><li>Every <strong>node</strong> is an OMIM disease, and the numbers shown are OMIM disease identifiers.</li><li>A <strong>link</strong> represents the similarity score between the two disease it connects, coloured according to its similarity value.</li><li>The <strong>target disease</strong> appears in the centre, and it is connected to the 6 diseases that are most similar to it.</li></ul> In order to provide a wider picture, we connect these 10 diseases to their 3 most similar ones. The number of neighbours can be modified by the user. This explorer works best on Google Chrome.' 
+                      },
+                      {
+                        //pivot disease
+                        element: document.querySelector('#pivot_disease'),
+                        intro: "This text box shows the target disease."
+                      },
+                      {
+                        //canvas
+                        element: document.querySelector('#graph'),
+                        intro: "This is where the network is shown. You can click the nodes to select up to two disease and on the links to display the similarity between the connected diseases and select the diseases it connects. Zoom and pan levels are set with the controls on the top left. Clicking and dragging the nodes allows you to move them around.",
+                        position: 'top'
+                      },
+                      {
+                        //disease A box
+                        element: document.querySelector('#selected_disease_A'),
+                        intro: "The first disease chosen in the graph will appear in this box.",
+                        position: 'right'
+                      },
+                      {
+                        //disease B box
+                        element: document.querySelector('#selected_disease_B'),
+                        intro: "The second disease chosen in the graph will appear in this box.",
+                        position: 'right'
+                      },
+                      {
+                        //disease B box
+                        element: document.querySelector('#compare_help'),
+                        intro: "If you click on this button, a detailed comparison of both diseases will open in a new tab.",
+                        position: 'right'
+                      },
+                      {
+                        //binoculars
+                        element: document.querySelector('#exploreA'),
+                        intro: "If you click on this button, the disease in the box will become the target disease, and you will be exploring its neighbourhood. In other words, this disease will become the centre of the network.",
+                        position: 'right'
+                      },
+                      {
+                        //omim icon
+                        element: document.querySelector('#searchA'),
+                        intro: "If you click on this button, a new tab will open presenting a table with the 100 most similar diseases to the disease in the box.",
+                        position: 'right'
+                      },
+                      {
+                        //omim icon
+                        element: document.querySelector('#linkA'),
+                        intro: "If you click on this button, a new tab will open with the OMIM entry of the disease in the box.",
+                        position: 'right'
+                      },
+                      {
+                        //download
+                        element: document.querySelector('#download_figure_help'),
+                        intro: "Clicking on this icon will open a new tab with the image for download.",
+                        position: 'top'
+                      },
+                      {
+                        //toggle node labels
+                        element: document.querySelector('#node_label_onoff'),
+                        intro: "Check here to hide and show the node labels in the network.",
+                        position: 'top'
+                      },
+                      {
+                        //select type of label
+                        element: document.querySelector('#label_type'),
+                        intro: "Select whether to show OMIM disease IDs or OMIM disease names as node labels. Note that often disease names are quite long, and they can overlap. Therefore this feature works best when only few nodes are displayed.",
+                        position: 'top'
+                      },
+                      {
+                        //select layout
+                        element: document.querySelector('#layout'),
+                        intro: "Select the layout of the network.",
+                        position: 'top'
+                      },
+                      {
+                        //fill network
+                        element: document.querySelector('#fill_network_help'),
+                        intro: "Clicking this button will draw connections between every pair of nodes. Keep in mind that this might take some time for larger networks.",
+                        position: 'top'
+                      },
+                      {
+                        //check number of neighbours
+                        element: document.querySelector('#network_control_1'),
+                        intro: "Use these controls to change the number of first-level neighbours that will appear in the plot. First level neighbours are the diseases most similar to the disease being explored. Click on Update Network to refresh the network after changing the number of nodes.",
+                        position: 'top'
+                      },
+                      {
+                        //check number of neighbours
+                        element: document.querySelector('#network_control_2'),
+                        intro: "Use these controls to change the number of second-level neighbours that will appear in the plot. Second level neighbours are the most similar diseases to the first level neighbours of the disease currently being explored. Click on Update Network to refresh the network after changing the number of nodes.",
+                        position: 'top'
+                      },
+                      { 
+                          element: document.querySelector('#tutorial_help'),
+                          intro: 'You are now ready to use the explorer! Click "Done" to close this tutorial. Remember you can open this guide at any time.'
+                      },
+                    ]
+                  });
+
+                  intro.setOption('tooltipPosition', 'auto');
+                  intro.start();
+              }
+
+            //just something to change the type of label shown
+            function selectNames()
+            {
+                var add  =  $("#select_names").val(); 
+
+                if (add == "node_with_name")
+                {
+                    var remove = "node_with_id";
+                }
+                else if (add == "node_with_id")
+                {
+                    var remove = "node_with_name";
+                }
+                
+                var mynodes = cy.nodes();
+                //add the class for the other nodes.
+                for (var i = 0; i < mynodes.length; i++)
+                {
+                    mynodes[i].removeClass(remove);
+                    mynodes[i].addClass(add);
+                }
+            }
+
+            //just something to change the layout of the display.
+            function setLayout()
+            {
+                var which_layout =  $("#change_layout").val(); 
+
+                if (which_layout == "concentric")
+                {
+                    var options = {
+                        name: which_layout,
+                        avoidOverlap: true,
+                        concentric: function(){
+                            return this.data('level');
+                        },
+                        circle: true,
+                        minNodeSpacing: 19, 
+                        padding:2, //padding of the plot with the canvas. 
+                    };
+                }
+                else if (which_layout == "force")
+                {
+                    var options = {
+                        name: 'springy',
+                        //animate: true, // whether to show the layout as it's running
+                        maxSimulationTime: 4000, // max length in ms to run the layout
+                        ungrabifyWhileSimulating: false, // so you can't drag nodes during layout
+                        fit: true, // whether to fit the viewport to the graph
+                        padding: 30, // padding on fit
+                        boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+                        random: false, // whether to use random initial positions
+                        infinite: false, // overrides all other options for a forces-all-the-time mode
+                        //ready: undefined, // callback on layoutready
+                        //stop: undefined, // callback on layoutstop
+                    };
+                }
+                else
+                {
+                    var options = {
+                        name: which_layout
+                    };
+                }
+
+                var layout = cy.makeLayout( options );
+                layout.run();
+            }
+            //download the figure
+
+
+        $( document ).ready(function() {
+
+
+            //set the correct titles for the buttons in the disease comparison.
+            unselect_diseases();
+        	
+        	//make mesh terms boxes hide-able
+        	var toggleMinHeight = 0,
+                duration = 500,
+                easing = 'swing';
+
+
+
+        	$('.meshparent .firstletter').each(
+                function(){
+                    var elementId = $(this).parents('.meshparent').find('.meshcontent');
+                    elementId.attr('data-height',elementId.outerHeight());
+                }).click(
+                    function(){
+                        var elementId = $(this).parents('.meshparent').find('.meshcontent');
+                        var curH = elementId.height();
+                        if (elementId.is(':animated')){
+                            return false;
+                        }
+
+                        else if (curH > toggleMinHeight) {
+                            elementId.animate(
+                                {
+                                   'height' : toggleMinHeight,
+                                   'padding': '0px'
+                                }, duration, easing,function(){
+                                    $(this).find('i').removeClass('fa-caret-up');
+                                    $(this).find('i').addClass('fa-caret-down');
+                                    $(this).parents('.meshparent').addClass('collapsed');
+                                    $(this).parents('.meshparent').removeClass('expanded');
+                                });
+                        }
+                        else if (curH == toggleMinHeight){
+                            elementId.animate(
+                                {
+                                    'height' : elementId.attr('data-height'),
+                                    'padding': '5px'
+                                }, duration, easing, function(){
+                                    $(this).find('i').removeClass('fa-caret-down');
+                                    $(this).find('i').addClass('fa-caret-up');
+                                    $(this).parents('.meshparent').addClass('expanded');
+                                    $(this).parents('.meshparent').removeClass('collapsed');
+                                });
+                        }
+                }); //.meshparent .firstletter selector
+
+
+                $("#expand_all_mesh").click(function() {
+                    
+                    if ($(this).hasClass("fa-chevron-down"))
+                    {
+                        $("#expand_all_mesh").removeClass("fa-chevron-down");
+                        $("#expand_all_mesh").addClass("fa-chevron-up");
+                        $("#expand_all_mesh").text("Collapse all");
+                        //expand all mesh containers.
+                        $(".meshcontent").each( function() {
+                            $(this).animate(
+                            {
+                                'height' : $(this).attr('data-height'),
+                                'padding': '5px'
+                            }, duration, easing, function(){
+                                $(this).find('i').removeClass('fa-caret-down');
+                                $(this).find('i').addClass('fa-caret-up');
+                                $(this).parents('.meshparent').addClass('expanded');
+                                $(this).parents('.meshparent').removeClass('collapsed');
+                            });
+                        });
+                    }
+                    else
+                    {
+                        $("#expand_all_mesh").addClass("fa-chevron-down");
+                        $("#expand_all_mesh").removeClass("fa-chevron-up");
+                        $("#expand_all_mesh").text("Expand all");
+                        //expand all mesh containers.
+                        $(".meshcontent").each( function() {
+                            $(this).animate(
+                            {
+                                'height' : "0px",
+                                'padding': '0px'
+                            }, duration, easing, function(){
+                                $(this).find('i').addClass('fa-caret-down');
+                                $(this).find('i').removeClass('fa-caret-up');
+                                $(this).parents('.meshparent').removeClass('expanded');
+                                $(this).parents('.meshparent').addClass('collapsed');
+                            });
+                        });
+                    }
+            });
+
+                $(".meshparent").addClass("collapsed");
+			
+			//check overflow of title
+			if($("#pivot_disease").height() > 32*2){
+				$("#pivot_disease").addClass("overflown");
+                //$("#pivot_disease").attr('title', '{{ chosen_disease_name}} ({{chosen_disease_mim}})');
+			}
+			if($("#query_disease").height() > 32*2){
+				$("#query_disease").addClass("overflown");
+			}
+			
+			//toggle lables in cytoscape
+            $('#label_toggle').change(function() {
+                if($(this).is(":checked")) {
+                    cy.nodes().removeClass('no_label');
+                    $("#select_names").prop( "disabled", false );
+                }
+                else
+                {
+                    cy.nodes().addClass('no_label');
+                    $("#select_names").prop( "disabled", true);
+                }
+            });//lable_toggle selector
+            $("#download_figure").click(function (){
+
+
+                var png64 = cy.png();
+
+                //get values for the colorbar
+                min_sim=$('#min_sim_value').text();
+                max_sim=$('#max_sim_value').text();
+
+                //get png from current cytoscape state
+                var imgElement=document.createElement('img');
+                imgElement.src=png64;
+
+                //create new canvas for download
+                var canvas = document.createElement("canvas");
+                canvas.width = cy.container().offsetWidth+30;
+                canvas.height = cy.container().offsetHeight+50;
+
+                //Blackmagic makes that if you uncomment this line, the download works on Firefox
+                //if (navigator.userAgent.indexOf("Chrome") == -1)
+                    //alert('The plot will now be generated. Click on Ok to close this message');
+                
+                //print labels 
+                var ctx = canvas.getContext("2d");
+                ctx.font="24px Lato";
+                ctx.fillStyle="#888";
+                disease_name=$('#pivot_disease').attr('value');
+                ctx.fillText(disease_name,100,30,canvas.width-180);
+
+
+                //add colorbar to the new canvas 
+                //ctx.rect(0, 0, canvas.width, canvas.height);
+                //ctx.stroke();
+                // add linear gradient
+                var grd = ctx.createLinearGradient(0, 24, 0, 420);
+                // red start.
+                //grd.addColorStop(0, '#FF0000');
+                grd.addColorStop(0, 'Purple');   
+                if (max_sim == min_sim)
+                {
+                    //stop on red.
+                    //grd.addColorStop(1, '#FF0000');   
+                    grd.addColorStop(1, 'Purple'); 
+                }
+                else
+                {
+                    //stop on blue.
+                    //grd.addColorStop(1, '#0000FF');
+                    grd.addColorStop(1, 'Teal');
+                }
+                ctx.fillStyle = grd;
+                ctx.fillRect(canvas.width-25,24,20,400);
+
+                //add colorbar text
+                ctx.font="20px Lato";
+                ctx.fillStyle="#888";
+                ctx.fillText(max_sim,canvas.width-30,20,30);
+                ctx.fillText(min_sim,canvas.width-30,445,30);
+
+                //ctx.drawImage(testimg,0,50);
+                $('body').append(canvas);
+                //wait for image to load
+                imgElement.onload = function(){
+                    //load image into canvas
+                    ctx.drawImage(imgElement,0,50);
+                    //convert canvas to a png
+                    var dataURL=canvas.toDataURL('image/png').replace('image/png','image/octet-stream');
+                    //download
+                    window.location.href=dataURL;
+                }
+            }); //download figure
+
+
+
+            //prepare the modal dialog to verify if the user wants to fill
+            //the network even though it might be a bit too big.
+            $( "#dialog-confirm" ).dialog({
+              resizable: false,
+              dialogClass: "no-close",
+              height:300,
+              width:540,
+              modal: true,
+              autoOpen: false,
+              buttons: {
+                "Plot": function() {
+                      //the user chose to plot the huge network anyway
+                      fillNetwork();
+                      return false;
+                },
+                "Cancel": function() {
+                      //the user decided not to plot anything, so we do nothing.
+                      $( this ).dialog( "close" );
+                      return true;
+                },
+              }
+            });
+
+            //load the pivo disease
+            $("#pivot_disease").attr("value", "{{ chosen_disease_mim }} - {{ chosen_disease_name }}");
+            $("#explored_disease").attr("value", "{{ chosen_disease_mim }} - {{ chosen_disease_name }}");
+
+            //construct the request query for the original disease
+            getNetwork(URL + query_disease + "/" + parseFloat($("#direct_value").attr("value")) + "/" + parseFloat($("#indirect_value").attr("value")) + '/');
+
+
+            //start the tooltip
+            $(function() {
+                $( document ).tooltip();
+            });
+
+            $("#select_names").change(function (){
+                selectNames();
+            });
+            //set the layout
+            $("#change_layout").change(function (){
+                setLayout();
+            });
+
+            $("#fill_network").click(function (){
+                //call the ajax with the correct url for the thing.
+                if (parseFloat($("#direct_value").attr("value")) + parseFloat($("#indirect_value").attr("value")) > 25)
+                {
+                    $("#dialog-confirm").dialog("open");
+                }
+                else
+                {
+                    if ($("#fill_network").hasClass("fa-connectdevelop"))
+                    {
+                        $("#fill_network").removeClass("fa-connectdevelop");
+                        $("#fill_network").addClass("fa-scissors");
+                        $("#fill_network_label").text("Unfill network");
+                        //here we will change the help displayed to reflect the new action
+                        $("#fill_network").attr('title',"Click here to unfill the network. This action will return the explorer to its default state");
+                        fillNetwork();
+                    }
+                    else
+                    {
+                        $("#fill_network").removeClass("fa-scissors");
+                        $("#fill_network").addClass("fa-connectdevelop");
+                        $("#fill_network_label").text("Fill network");
+                        //here we will change the help displayed to reflect the new action
+                        $("#fill_network").attr('title',"Click here to fill the network. This action will link every disease in the explorer based on their pairwise similarity. This might take a while to process, so please be patient.");
+                        unfillNetwork();
+                    }
+                }
+            });
+
+            //what to do when the redraw network button is clicked.
+            $("#processRedraw").click(function (){
+                //reset the variables that hold the jsons for teh newtorks.
+                fullNetwork = "";
+                normalNetwork = "";
+                //clear the selections
+                unselect_diseases();
+                //get current limits.
+                direct_limit = parseFloat($("#direct_value").attr("value"))
+                indirect_limit = parseFloat($("#indirect_value").attr("value"))
+                getNetwork(URL + query_disease + "/" + direct_limit + "/" + indirect_limit + "/");
+				current_first_level_elements=direct_limit;
+				current_second_level_elements=indirect_limit;
+				$("#processRedraw").addClass("update_locked");
+				$("#processRedraw").addClass("update_locked");
+                $("#fill_network").removeClass("fa-scissors");
+                $("#fill_network").addClass("fa-connectdevelop");
+            });
+
+            //what to do when the buttons are pressed.
+            $("#compare").click(function (){
+                var mimA = $('#selected_disease_A').attr('mim');
+                var mimB = $('#selected_disease_B').attr('mim');
+                if  ( (mimA && mimB) && (mimA != mimB) )
+                {
+                    var win = window.open('http://www.paccanarolab.org/landis/score/'+ mimA + '/'+ mimB + '/', '_blank');
+                    if(win){
+                        //Browser has allowed it to be opened
+                       win.focus();
+                    }else{
+                       //Broswer has blocked it
+                       alert('Please allow popups for this site');
+                    }
+                }
+            });
+            
+             //what to do when we click on a node in the network and then click the xplore binoculars.            
+             $("#exploreA").click(function (){ 
+                if ($('#selected_disease_A').attr('mim')) {
+                    //get mim and text of the first disease
+                    my_mim=$('#selected_disease_A').attr('mim');
+                    my_text=$('#selected_disease_A').text();    
+                    //get current limits.
+                    direct_limit = parseFloat($("#direct_value").attr("value"))
+                    indirect_limit = parseFloat($("#indirect_value").attr("value"))
+                    getNetwork(URL + my_mim + "/" + direct_limit + "/" + indirect_limit + "/");
+                    //update the query disease number
+                    query_disease = my_mim;
+                    $("#pivot_disease").text(my_text);
+                    unselect_diseases();
+                    //flush the stored networks
+                    fullNetwork = "";
+                    normalNetwork = "";
+                }
+
+                });
+            //what to do when we click on a node in the network and then click the xplore binoculars.            
+             $("#exploreB").click(function (){ 
+                 if ($('#selected_disease_B').attr('mim')) {
+                    //get mim and text of the first disease
+                    my_mim=$('#selected_disease_B').attr('mim');
+                    my_text=$('#selected_disease_B').text();    
+                    //get current limits.
+                    direct_limit = parseFloat($("#direct_value").attr("value"))
+                    indirect_limit = parseFloat($("#indirect_value").attr("value"))
+                    getNetwork(URL + my_mim + "/" + direct_limit + "/" + indirect_limit + "/");
+                    //update the query disease number
+                    query_disease = my_mim;
+                    $("#pivot_disease").text(my_text);
+                    unselect_diseases();
+                    //flush the stored networks
+                    fullNetwork = "";
+                    normalNetwork = "";
+                }
+
+                });
+
+             $("#linkB").click(function (){ 
+                var mimA = $('#selected_disease_B').attr('mim');
+                if  ( mimA )
+                {
+                    var win = window.open("http://www.omim.org/" + mimA , '_blank');
+                    if(win){
+                        //Browser has allowed it to be opened
+                       win.focus();
+                    }else{
+                       //Broswer has blocked it
+                       alert('Please allow popups for this site');
+                    }
+                }
+             });
+
+             $("#linkA").click(function (){ 
+                var mimA = $('#selected_disease_A').attr('mim');
+                if  ( mimA )
+                {
+                    var win = window.open("http://www.omim.org/" + mimA , '_blank');
+                    if(win){
+                        //Browser has allowed it to be opened
+                       win.focus();
+                    }else{
+                       //Broswer has blocked it
+                       alert('Please allow popups for this site');
+                    }
+                }
+             });
+
+             $("#searchA").click(function (){ 
+                var mimA = $('#selected_disease_A').attr('mim');
+                if  ( mimA )
+                {
+                    var win = window.open("http://www.paccanarolab.org/landis/table/" + mimA + '/', '_blank');
+                    if(win){
+                        //Browser has allowed it to be opened
+                       win.focus();
+                    }else{
+                       //Broswer has blocked it
+                       alert('Please allow popups for this site');
+                    }
+                }
+            });
+
+             $("#searchB").click(function (){ 
+                var mimA = $('#selected_disease_B').attr('mim');
+                if  ( mimA )
+                {
+                    var win = window.open("http://www.paccanarolab.org/landis/table/" + mimA + '/', '_blank');
+                    if(win){
+                        //Browser has allowed it to be opened
+                       win.focus();
+                    }else{
+                       //Broswer has blocked it
+                       alert('Please allow popups for this site');
+                    }
+                }
+            });
+
+			//set current value of nodes for update
+			current_first_level_elements=parseInt($("#direct_value").attr("value"));
+			current_second_level_elements=parseInt($("#indirect_value").attr("value"));
+        }); //document.ready
+
+        
+        function changeNeighbours(which, increment)
+        //inner_value
+        //outer_value
+        {
+            //we have different limits for both sets of neighbours. Either direct or indirect.
+            var current_set_limit = 10;
+            if (which == "direct_value")
+			{
+                current_set_limit = 50;
+			}
+                
+            //check there is something left at this point.
+            if (increment == -1 && $("#"+which).attr("value") > 0)
+            {
+                $("#"+which).attr("value", parseFloat($("#"+which).attr("value")) + increment);
+            }
+            //now check the limits for each box.
+            if (increment == 1 && $("#"+which).attr("value") < current_set_limit)
+            {
+                $("#"+which).attr("value", parseFloat($("#"+which).attr("value")) + increment);
+            }
+
+			//disable update network if current node values are used
+			if (parseInt($("#direct_value").attr("value"))==current_first_level_elements && parseInt($("#indirect_value").attr("value"))==current_second_level_elements)
+			{
+				$("#processRedraw").addClass("update_locked");
+			}else{
+				$("#processRedraw").removeClass("update_locked");
+			}
+        }
+
+        //simple function to produce the colorbar for the plot.
+        function drawColourBar(max_sim, min_sim)
+        {
+            //--------------------
+            //draw colorbar
+            //check if max == min. if this is the case, put all of the same colour.
+//			var canvas = document.createElement("canvas");
+
+            var canvas = document.getElementById('colorbar');
+            canvas.width = 20;
+            canvas.height = cy.container().offsetHeight-60;
+
+            var context = canvas.getContext('2d');
+            context.rect(0, 0, canvas.width, canvas.height);
+            // add linear gradient
+            var grd = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+            // red start.
+            //grd.addColorStop(0, '#FF0000');
+            grd.addColorStop(0, 'Purple');   
+            if (max_sim == min_sim)
+            {
+                //stop on red.
+                //grd.addColorStop(1, '#FF0000');   
+                grd.addColorStop(1, 'Purple'); 
+            }
+            else
+            {
+                //stop on blue.
+                //grd.addColorStop(1, '#0000FF');
+                grd.addColorStop(1, 'Teal');
+            }
+            context.fillStyle = grd;
+            context.fill();
+
+
+            //--------------------
+        }
+
+        function unfillNetwork()
+        {
+            unselect_diseases();
+            $.blockUI({ message: '<h4><img src="{% static 'images/loading.gif' %}"/> <br/> We are creating the network. Please, be patient...</h4>' });
+            drawColourBar(normalNetwork['max_sim'], normalNetwork['min_sim']);
+            $('#max_sim_value').text(normalNetwork['max_sim'].toFixed(2));
+            $('#min_sim_value').text(normalNetwork['min_sim'].toFixed(2));
+            $("#change_layout").val('force');
+            plotNetwork(normalNetwork);
+            $.unblockUI();
+        }
+
+        //ajax call to get all links in the network
+        function fillNetwork()
+        {
+            $("#change_layout").val('concentric');
+            unselect_diseases();
+            if (fullNetwork != "")
+            {
+                $.blockUI({ message: '<h4><img src="{% static 'images/loading.gif' %}"/> <br/> We are creating the network. Please, be patient...</h4>' });
+                drawColourBar(fullNetwork['max_sim'], fullNetwork['min_sim']);
+                $('#max_sim_value').text(fullNetwork['max_sim'].toFixed(2));
+                $('#min_sim_value').text(fullNetwork['min_sim'].toFixed(2));
+                plotNetwork(fullNetwork);
+                $.unblockUI();
+            }
+            else{
+              $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    url: URL_fill,
+                    data: JSON.stringify(networkJson),
+                    beforeSend: function( xhr ) {
+                        $.blockUI({ message: '<h4><img src="{% static 'images/loading.gif' %}"/> <br/> We are creating the network. Please, be patient...</h4>' });
+                    },
+                    success: function(data, status, xhr) {
+                        //store the json data because we will need it to complete the network
+                        networkJsonFull = data;
+                        //store the data to repaint it if necessary.
+                        fullNetwork = data;
+                        //get the max and min values in the json.
+                        $('#max_sim_value').text(data['max_sim'].toFixed(2));
+                        $('#min_sim_value').text(data['min_sim'].toFixed(2));
+                        //ready.
+                        plotNetwork(data);
+                        drawColourBar(data['max_sim'], data['min_sim']);
+                        $.unblockUI();
+                    },
+                    error: function(data, status, xhr) {
+                        console.log(data);
+                        $.unblockUI();
+                    },
+                });
+            }
+
+        }
+        //ajax call to get the regular, non-complete network.
+        function getNetwork(request_url)
+        {
+            $.ajax({
+                url: request_url,
+                type: "get",
+                beforeSend: function( xhr ) {
+                $.blockUI({ message: '<h3><img src="{% static 'images/loading.gif' %}"/> <br/> We are creating the network...</h3>' });
+                },
+                success: function(data, status, xhr) {
+                    //store the json data because we will need it to complete the network
+                    networkJson = data;
+                    //store the data to restore the network.
+                    normalNetwork = data;
+                    //get the max and min values in the json.
+                    $('#max_sim_value').text(data['max_sim'].toFixed(2));
+                    $('#min_sim_value').text(data['min_sim'].toFixed(2));
+                    //ready.
+                    plotNetwork(data);
+                    //draw the colourbar
+                    drawColourBar(data['max_sim'], data['min_sim']);
+                    $.unblockUI();
+                },
+                error: function(data, status, xhr) {
+                    console.log(data);
+                    $.unblockUI();
+                },
+          });
+        } 
+
+	//unselect diseases
+	function unselect_diseases(){
+            //functionality of select boxes
+            $("#selected_disease_A").text("Click on a node to compare");
+            $("#selected_disease_A").attr('mim',"");
+            $("#selected_disease_A").removeClass('disease_selected');
+            $("#selected_disease_B").text("Click on a node to compare");
+            $("#selected_disease_B").attr('mim',"");
+            $("#selected_disease_B").removeClass('disease_selected');
+
+            //styles of buttons for each disease
+            $("#exploreA").addClass("disease_locked");
+            $("#exploreB").addClass("disease_locked");
+
+            $("#exploreA").attr('title', "Click on a node in the graph to explore");
+            $("#exploreB").attr('title', "Click on a node in the graph to explore");
+
+            $("#searchA").addClass("disease_locked");
+            $("#searchB").addClass("disease_locked");
+
+            $("#linkA").addClass("disease_locked");
+            $("#linkB").addClass("disease_locked");
+
+            $("#searchA").attr('title', "Click on a node in the graph to search");
+            $("#searchB").attr('title', "Click on a node in the graph to search");
+
+            $("#linkA").attr('title', "Click on a node in the graph");
+            $("#linkB").attr('title', "Click on a node in the graph");
+
+            //style of the compare button
+            $("#compare").addClass("disease_locked");
+            $("#compare").attr("title", "Click on a link or nodes in the graph to compare the diseases");
+        }//unselect diseases
+
+        //select disease
+        function select_disease(which,mim,name){
+            //search box
+            $("#selected_disease_" + which).text(mim + ' - ' + name);
+            $("#selected_disease_" + which).attr('mim',mim);
+            $("#selected_disease_" + which).addClass('disease_selected');
+
+            //styles of buttons
+            $("#explore" + which).removeClass("disease_locked");
+            $("#explore" + which).attr('title', "Click to explore "+mim);
+            $("#search" + which).removeClass("disease_locked");
+            $("#search" + which).attr('title', "Click to search "+mim);
+            $("#link" + which).removeClass("disease_locked");
+            $("#link" + which).attr('title', "Click to go to omim");
+        }//select disease
+
+        function plotNetwork(data){
+
+           cy = cytoscape({
+               container: $('#graph')[0],
+              style: cytoscape.stylesheet()
+                .selector('node')
+                  .css({
+                    'width': 20,
+                    'height': 20,
+                    'content': 'data(title)',
+                    'text-valign': 'center',
+                    'font-size': 13,
+                    'color':'#00000',
+					//'background-color' : 'mapData(level,230,90,#663399,#43b3e0)',
+                    'text-outline-width':'0px',
+                    //'text-outline-color':'mapData(level,230,90,#663399,#43b3e0)',
+                    'text-max-width': '200px',
+                    'text-wrap': 'wrap',
+                    //'min-zoomed-font-size': '10',
+                    'text-valign':'top',
+                    'text-background-opacity': 0.45,
+                    'text-background-color': '#ccc',
+                    'text-background-shape': 'roundrectangle',
+                    'text-border-color': '#000',
+                    'text-border-width': 0,
+                    'text-border-opacity': 0.5
+                  })
+
+                .selector('.node_with_name')
+                  .css({
+                    'content': 'data(title)'
+                  })
+
+                .selector('.node_with_id')
+                  .css({
+                    'content': 'data(id)',
+                    'color': '#000',
+                    'text-outline-width': '0px',
+                  })
+
+                .selector('edge')
+                  .css({
+                    'line-color': 'mapData(colour,1,0,Purple,Teal)',
+                    /*'line-color': 'mapData(colour,0,1,blue,red)',*/
+                    'width': 4, 
+                    'text-valign':'top',
+                    'opacity': 0.3,				
+                    'edge-text-rotation': 'autorotate'
+                  })
+				.selector('.highlighted_edge')
+                  .css({
+                    'opacity': 1,
+					'content':'data(similarity)',
+                    'text-valign':'top',
+					'font-size': 12,
+					'color':'#0000',
+                     'text-background-opacity': 1,
+                     'text-background-color': '#ccc',
+                     'text-background-shape': 'roundrectangle',
+                     'text-border-color': '#000',
+                     'text-border-width': 0,
+                     'text-border-opacity': 1
+					/*'text-outline-width':'1px',
+					'text-outline-color':'mapData(colour,1,0,Purple,Teal)'*/
+                  })
+                .selector('.no_label')
+                  .css({
+                    'content': '',
+                  })
+
+                .selector('.highlighted')
+                  .css({
+                    'background-color': 'DarkSalmon',
+                    'line-color': 'black',
+                    'opacity': 1,
+                    'font-size':17,
+                    'color':'#00000',
+                    /*'text-outline-width':'1px',
+                    'text-outline-color':'#00000'*/
+                })
+                .selector('.centre')
+                  .css({
+                    'opacity': 1,
+                    'shape':'square',
+                    'border-width':'0px',
+                    'width':30,
+                    'height':30,
+                    'font-size':14,
+                    /*'text-outline-color':'DarkRed',*/
+                    'background-color':'DarkRed'
+                  })
+                .selector('.highlighted_centre')
+                  .css({
+                    'background-color': 'Gold',
+                    'border-color': '#ffff',
+                    'border-width': 2,
+                    'border-opacity': 0.8,
+                    'opacity': 1,
+                    'color':'#0000',
+                    'font-size':17,
+                    /*'text-outline-width':'1px',
+                    'text-outline-color':'#00000',*/
+                    })
+                //.selector('.node_with_id')
+                .selector('.node_with_name')
+                  .css({
+                    'font-size': 13
+                  }),
+              
+              elements: data,
+                //layout is set after the ready function
+              /*layout: {
+                    name: $("#change_layout").val(),
+                        avoidOverlap: true,
+                        concentric: function(){
+                        return this.data('level');
+                    },
+                    circle: true,
+                    minNodeSpacing: 19, 
+                    padding:2, //padding of the plot with the canvas. 
+              },*/
+
+             ready: function(){
+                 //handle the click
+                 var mynodes = this.nodes();
+                 var myedges = this.edges();
+                 //disable user zoom. Just with the buttons.
+                 this.userZoomingEnabled( false );
+
+
+                 //set the pan and zoom buttons.
+                 this.panzoom({ })
+
+                 //what happens when a node gets clicked?
+                 //fill by turns selected_disease_A and selected_disease_B
+                 this.on('tap', 'node', function(){
+                    var selectedA=$("#selected_disease_A").hasClass('disease_selected');
+                    var selectedB=$("#selected_disease_B").hasClass('disease_selected');
+
+                    //when to fill A
+                    if(!selectedA || (selectedA && selectedB) || $("#selected_disease_A").attr("mim")==this.data().id)
+                    {
+                        unselect_diseases();
+                        mynodes.removeClass('highlighted');
+                        myedges.removeClass('highlighted_edge');
+                        mynodes.removeClass('highlighted_centre');
+                        
+                        select_disease("A",this.data().id,this.data().title);
+                    }
+                    else //fill B
+                    {
+                        select_disease("B",this.data().id,this.data().title);
+                        $("#compare").removeClass("disease_locked");
+                        $("#compare").attr('title','Click here to compare disease '+$("#selected_disease_A").attr('mim')+' and '+this.data().id);
+                    }
+                    this.addClass('highlighted_centre');
+                  }); //on tap
+
+                //on tap hold, highlight the held node and its neighbours
+                this.on('mouseover','node', function(){
+                   neighbours = this.neighborhood();
+                    //add the class for the selecte dnode.
+                    this.addClass('highlighted');
+                    //add the class for the other nodes.
+                    for (var i = 0; i < neighbours.length; i++)
+                    {
+                        if (neighbours[i].isNode())
+                        {
+                            neighbours[i].addClass('highlighted');
+                        }
+                        if (neighbours[i].isEdge())
+                        {
+                            neighbours[i].addClass('highlighted_edge');
+                        }
+                    }
+
+                });//on taphold
+                
+                //on tapend clear highlight neighbours
+                this.on('mouseout','node', function(){
+                     //restore all nodes to their default class
+                    mynodes.removeClass('highlighted');
+                    myedges.removeClass('highlighted_edge');                    
+                });
+
+               //on tap hold, highlight the held node and its neighbours
+                this.on('taphold','node', function(){
+                   neighbours = this.neighborhood();
+                    //add the class for the selecte dnode.
+                    this.addClass('highlighted');
+                    //add the class for the other nodes.
+                    for (var i = 0; i < neighbours.length; i++)
+                    {
+                        if (neighbours[i].isNode())
+                        {
+                            neighbours[i].addClass('highlighted');
+                        }
+                        if (neighbours[i].isEdge())
+                        {
+                            neighbours[i].addClass('highlighted_edge');
+                        }
+                    }
+
+                });//on taphold
+                
+                //on tapend clear highlight neighbours
+                this.on('tapend','node', function(){
+                     //restore all nodes to their default class
+                    mynodes.removeClass('highlighted');
+                    myedges.removeClass('highlighted_edge');                    
+                });
+
+                 this.on('click','edge', function(){
+                     mynodes.removeClass('highlighted');
+                     mynodes.removeClass('highlighted_centre');
+                     myedges.removeClass('highlighted_edge');
+                     this.source().addClass('highlighted_centre');
+                     this.target().addClass('highlighted_centre');
+                     this.addClass('highlighted_edge');
+                     
+                     unselect_diseases();
+                     select_disease("A",this.source().data().id,this.source().data().title);
+                     select_disease("B",this.target().data().id,this.target().data().title);
+                 });
+				
+				//remove focus on background click 
+				this.on('click',function(event){
+					var evTarget = event.cyTarget;
+					if (evTarget == cy)
+					{
+						mynodes.removeClass('highlighted');
+                     	mynodes.removeClass('highlighted_centre');
+						myedges.removeClass('highlighted_edge');
+
+						unselect_diseases();
+					}
+				});
+
+                //sets the layout for the graph
+                setLayout(); 
+              }// ready 
+        });
+
+        } //plotNetwork
+		$(window).resize(function() {
+			cy.center();
+			drawColourBar($("#max_sim_value").text(), $("#min_sim_value").text());
+		});
+        </script>
+
+	</head>
+	<body>
+
+		<!-- Nav -->
+
+			<nav id="nav">
+				<ul class="container">
+                    <li><a href="{% url 'index' %}#home">Home</a></li>
+                    <li><a href="{% url 'index' %}#explore">Explore</a></li>
+                    <li><a href="{% url 'index' %}#search">Search</a></li>
+					<li><a href="{% url 'index' %}#compare">Compare</a></li>
+					<li><a href="{% url 'index' %}#download">Download</a></li>
+					<li><a href="{% url 'index' %}#about">About</a></li>
+				</ul>
+			</nav>
+		<!-- Home -->
+			<div class="wrapper style1">
+                            <article class="container" id="explore_container">
+                                <div class="row uniform">
+                                    <div class="10u 12u(mobile)" style="position:relative">
+                                        <a href="#details" class="scrolly" style="float:left;margin:0 0.4em;"><i class="fa fa-bars" title="Jump to details"></a></i>
+                                        <h4 id="pivot_disease" style="text-align:left;">{{ chosen_disease_mim }} - {{ chosen_disease_name }}</h4>
+                                   </div>
+ 					 <!-- Tutorial -->
+						<div class="1u 6u(mobile)">
+                            <div class="component slim_fit" id="tutorial_help">
+								<a href="#" onclick="startIntro();"><i id="tutorial" class="fa fa-info-circle fa-2x hover_change fill" title='Brief tutorial on how to use this page'></i></a>Tutorial
+							</div>
+						</div>
+					 <!-- Download -->
+						<div class="1u 6u(mobile)">
+							<div class="component slim_fit" id="download_figure_help">
+								<a class="fa fa-download fa-2x hover_change fill" id="download_figure" title="Opens a tab with the image for download"></a> Download
+							</div>
+						</div>
+                                </div>
+        
+<!--				</article>
+			</div>
+
+			<div class="wrapper style2">
+				<article id="search"> 
+					<div class="container">
+-->
+				<!-- Cytoscape -->
+						<div class="row uniform"> <!-- Canvas Container -->
+							<div class="10u 12u(mobile)" style="position:relative">
+								<div class="graph_container ratio16x9">
+									<div id="graph" class="graph"></div>
+								</div>
+                                <div style="position:absolute;top:20px;right:0">
+                                    <div style="padding:0px" id="max_sim_value"></div>
+                                    <canvas id="colorbar"></canvas>
+                                    <div style="margin-top:-10px"id="min_sim_value"></div>
+                                </div>
+							</div>
+							<div class="2u 12u(mobile)" style="position:relative">
+                                <div class="box" style="padding: 0.5em; overflow:hidden;">
+                                <!--toggle on off labels-->
+                                <div class="component" id="node_label_onoff">
+
+
+                                    <div class="onoffswitch">
+                                            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="label_toggle" checked>
+                                            <label class="onoffswitch-label" for="label_toggle">
+                                            <span class="onoffswitch-inner"></span>
+                                            <span class="onoffswitch-switch"></span>
+                                            </label>
+                                    </div>
+                                    <p style="position:relative; top:-7px;">Node labels</p>
+                                </div><!--component-->
+
+                                <!--label type dropbox-->
+		                        <div id="label_type" class="component">
+                                    <select id="select_names" class="hover_change" >
+		                                <option value="node_with_name" selected>OMIM names</option>
+		                                <option value="node_with_id">OMIM ids</option>
+		                            </select>
+                                    <p style="position: relative; top:-7px;" >Label Type</p>
+                                </div>
+                                <!-- layout dropbox-->
+		                        <div id="layout" class="component">
+                                    <select id="change_layout" class="hover_change" >
+		                                <option value="force" selected>Force directed</option>
+		                                <option value="concentric" >Concentric</option>
+		                                <option value="circle">Circle</option>
+		                                <option value="random">Random</option>
+		                                <option value="grid">Grid</option>
+		                                <option value="breadthfirst">Breadthfirst</option>
+		                            </select>
+                                    <p style="position: relative; top:-7px;" >Layout</p>
+		                        </div>
+                                <!-- Fill network -->
+                                <div class="component" id="fill_network_help">
+                                    <i id="fill_network" class="fa fa-connectdevelop fa-2x hover_change fill" title='Click here to fill the network. This action will link every disease in the explorer based on their pairwise similarity. This might take a while to process, so please be patient.'></i>
+                                    <p id="fill_network_label" style="position: relative; top:-7px;" >Fill Network</p>
+                                </div>
+								<!-- First level selector -->
+                                    <div class="component" id="network_control_1">
+                                        <div style="overflow:hidden; display:table; margin:auto;">
+                                            <i class="fa fa-minus-square fa-2x" onclick="changeNeighbours('direct_value',-1)"style="float:left;margin:5px" ></i>
+                                            <input disabled id ="direct_value" type="text" value=6 style="width:35px; padding:5px; float:left;"></input>
+                                            <i class="fa fa-plus-square fa-2x" onclick="changeNeighbours('direct_value',1)" style="float:left;margin:5px"></i>
+                                        </div>
+                                        <i class="fa fa-question-circle hover_change" style="z-index:100;" title="Number of diseases directly connected to the central disease"></i> 
+                                        <p id="fill_network_label" style="position: relative; top:-7px;" >First Level</p>
+                                    </div>
+                                    <!-- Second level selector -->
+                                    <div class="component" id="network_control_2">
+                                        <div style="overflow:hidden; display:table; margin:auto;">
+                                            <i class="fa fa-minus-square fa-2x" onclick="changeNeighbours('indirect_value',-1)" style="float:left;margin:5px"></i>
+                                            <input disabled id ="indirect_value" type="text" value=3 style="width:35px; padding:5px; float:left;"></input>
+                                            <i class="fa fa-plus-square fa-2x" onclick="changeNeighbours('indirect_value',1)" style="float:left;margin:5px"></i>
+                                        </div>
+                                        <i class="fa fa-question-circle hover_change" style="z-index: 100;"title="Number of diseases connected to the first level neighbours of the central disease."></i> 
+                                        
+                                        <p id="fill_network_label" style="position: relative; top:-7px;" >Second Level</p>
+                                    </div>
+
+                                    <!-- Update network -->
+                                    <div class="component">
+                                        <i id="processRedraw" class="fa fa-refresh fa-2x hover_change fill update_locked" title='Click here to update the newtork with the selected number of neighbours'></i>
+                                        <p style="margin-bottom:0.2em; position:relative; top:-7px;">Update Network</p>
+                                    </div>
+
+                            </div>
+                            </div><!--col2u-->
+					</div> <!-- row -->
+					<!-- </div> container-->
+							<div class="row uniform">
+					 <!-- First Disease -->
+                         <div class="4u 9u(mobile)">
+                            <div style="float:right;width:2em;">
+                                <i id="exploreA" class="fa fa-eye hover_change small_component" ></i>
+                                <i id="searchA" class="fa fa-binoculars hover_change small_component" ></i>
+                                <i id="linkA" class="fa fa-link hover_change small_component" ></i>
+                            </div>                           
+                            <p id="selected_disease_A" style="text-align:left;" class="clip_text box">{{ chosen_disease_mim }} - {{ chosen_disease_name }}</p>
+			</div>
+					 <!-- Compare -->
+						<div class="2u 3u(mobile)">
+							<div class="component slim_fit" id="compare_help">
+								<i id="compare" class="fa fa-compress fa-2x hover_change fill second_disease_locked" ></i> Compare
+							</div>
+						</div>
+					 <!-- Second Disease -->
+						<div class="4u 9u(mobile)">
+                            <div style="float:left;width:2em;">
+                                <i id="exploreB" class="fa fa-eye hover_change small_component" ></i>
+                                <i id="searchB" class="fa fa-binoculars hover_change small_component" ></i>
+                                <i id="linkB" class="fa fa-link hover_change small_component" ></i>
+                            </div>
+                            <p id="selected_disease_B" class="clip_text box">Click on a node to select a disease.</p>
+						</div>
+                                            </div><!-- row -->
+				</article>
+			</div>
+
+		<!-- Explore -->
+			<div class="wrapper style2">
+				<article id="details">
+					<div class="container">
+						<div class="row">
+							<div class="12u">
+							<h2>Details</h2>
+							</div>
+						</div>
+                        <div class="row">
+                        <div class="12u">
+                        <div id="second_disease">
+                        <div class="cont">
+                            <h4 class="disease_name"> {{chosen_disease_name}} ({{chosen_disease_mim}})
+                                <a href="http://www.omim.org/{{chosen_disease_mim}}" target="_blank"><i class="fa fa-link" title="Go to OMIM (opens in new tab)"></i></a>
+                            </h4>
+
+                            <h4>MeSH terms (<i class="fa fa-chevron-down" id="expand_all_mesh">Expand all</i>)</h4>
+                            
+                            <div class="meshgroup">
+                            {% for first_letter, value in mesh %}
+                               <div class="meshparent">
+                                   <div class="firstletter hover_change">
+                                       {{first_letter}} ({{ value|length }}) <i class="fa fa-caret-down hover_change"></i>
+                                   </div>
+                                   <div class="meshcontent">
+                                   {% for mesh in value %}
+                                        <a class="button_link" target="_blank" href="{{mesh.1}}">{{mesh.0}}</a>
+                                   {% endfor %}
+                                   </div>
+                               </div>
+                               {%endfor%}
+                            </div><!-- meshgroup -->
+
+                            <h4>Known proteins </h4>
+                            {% if proteins|length == 0 %}
+                            <h6>No proteins found</h6>
+                                {% else %}
+                                {% for row in proteins %}
+                                    <a class="button_link" target="_blank" href="http://www.uniprot.org/uniprot/{{row}}">{{row}}</a>
+                                {%endfor%}
+
+                            {% endif %}
+                                        </div><!-- cont -->
+                                    </div><!-- first disease -->
+                            </div><!-- 12u col -->
+                            </div><!-- row -->
+					</div>
+				</article>
+                        <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+			</div>
+		<!-- Contact -->
+			<!--<div class="wrapper style4">
+				<article id="contact" class="container 75%">
+					<div class="row">
+						<div class="12u">
+							<header>
+								<h2>Contact Information</h2>
+							</header>
+						</div>
+					</div>
+					<div class="row">
+						<div class="4u 12u(mobile)">
+							<a href="http://www.cs.rhul.ac.uk"><img src="{% static 'images/rhullogo.png' %}" alt="RHUL logo"/></a>
+						</div>
+						<div class="4u 12u(mobile)">
+								<p>Department of Computer Science<br/>
+								Royal Holloway, University of London<br/>
+								TW20 0EX, Egham, Surrey<br/>
+								United Kingdom</p>
+						</div>
+						<div class="4u 12u(mobile)">
+							<a href="http://www.paccanarolab.org"><img src="{% static 'images/paccanarolab-white.png' %}" alt="Paccanarolab logo" style="max-width:200px;"/></a>
+						</div>
+					</div>
+					<div>
+
+					</div>
+					<footer>
+						<ul id="copyright">
+							<li>&copy; Disimweb - The disease similarity browser. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</footer>
+                    </article>-->
+			</div>
+
+	</body>
+</html>

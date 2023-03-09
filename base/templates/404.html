@@ -1,0 +1,78 @@
+{%load static%}
+<!DOCTYPE HTML>
+<!--
+	Miniport by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>LanDis: The disease similarity landscape browser</title>
+		<meta charset="utf-8" />
+
+		<!-- Miniport imports -->
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="{% static 'javascript/ie/html5shiv.js' %}"></script><![endif]-->
+		<link rel="stylesheet" href="{% static 'css/main.css' %}" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="{% static 'css/ie8.css' %}" /><![endif]-->
+		<!--[if lte IE 9]><link rel="stylesheet" href="{% static 'css/ie9.css' %}" /><![endif]-->
+
+        <!-- d3js-->
+
+
+		<!-- visual ui imports -->
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css"/>
+		<!-- Scripts -->
+        <script src="{% static 'javascript/jquery.min.js' %}"></script>
+        <script src="{% static 'javascript/jquery-ui.js' %} "></script>
+        <script src="{% static 'javascript/jquery.scrolly.min.js' %}"></script>
+        <script src="{% static 'javascript/skel.min.js' %}"></script>
+        <script src="{% static 'javascript/skel-viewport.min.js' %}"></script>
+        <script src="{% static 'javascript/util.js' %}"></script>
+        <!--[if lte IE 8]><script src="{% static 'javascript/ie/respond.min.js' %}"></script><![endif]-->
+        <script src="{% static 'javascript/main.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+
+
+	</head>
+	<body>
+
+		<!-- Nav -->
+
+			<nav id="nav">
+				<ul class="container">
+                    <li><a href="{% url 'index' %}#home">Home</a></li>
+                    <li><a href="{% url 'index' %}#search">Search</a></li>
+					<li><a href="{% url 'index' %}#explore">Explore</a></li>
+					<li><a href="{% url 'index' %}#compare">Compare</a></li>
+					<li><a href="{% url 'index' %}#download">Download</a></li>
+					<li><a href="{% url 'index' %}#about">About</a></li>
+				</ul>
+			</nav>
+
+		<!-- Home -->
+			<div class="wrapper style1">
+				<article class="container" id="home">
+					<div class="row">
+						<div class="12u">
+                            <header>
+
+                                <p>
+                              You seem to have taken a wrong turn somewhere. Navigate using the menu
+                              on top or click <a href=".{% url 'index' %}">Here</a> to go home.
+                                </p>
+                                </header>
+                            <img src="{% static 'images/404_img.jpg' %}" style="width:75%;"></img>
+                            <p>
+                            Where's Wally: Fairground by Martin Handford
+                            <a href="https://www.flickr.com/photos/moonflowerdragon/9005277132"> 
+                                <i class="fa fa-creative-commons"></i></a>
+                            </p>
+                            </div><!-- hidden help -->
+						</div>
+					</div>
+				</article>
+			</div>
+
+	</body>
+</html>
