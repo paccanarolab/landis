@@ -1,0 +1,5 @@
+*.md
+**/.git
+**/.pyc
+**/.DS_Store
+**/._.DS_Store
