@@ -808,7 +808,7 @@
                 var mimA = $('#selected_disease_B').attr('mim');
                 if  ( mimA )
                 {
-                    var win = window.open("http://www.omim.org/" + mimA , '_blank');
+                    var win = window.open("http://www.omim.org/entry/" + mimA , '_blank');
                     if(win){
                         //Browser has allowed it to be opened
                        win.focus();
@@ -823,7 +823,7 @@
                 var mimA = $('#selected_disease_A').attr('mim');
                 if  ( mimA )
                 {
-                    var win = window.open("http://www.omim.org/" + mimA , '_blank');
+                    var win = window.open("http://www.omim.org/entry/" + mimA , '_blank');
                     if(win){
                         //Browser has allowed it to be opened
                        win.focus();
@@ -1497,7 +1497,7 @@
                         <div id="second_disease">
                         <div class="cont">
                             <h4 class="disease_name"> {{chosen_disease_name}} ({{chosen_disease_mim}})
-                                <a href="http://www.omim.org/{{chosen_disease_mim}}" target="_blank"><i class="fa fa-link" title="Go to OMIM (opens in new tab)"></i></a>
+                                <a href="http://www.omim.org/entry/{{chosen_disease_mim}}" target="_blank"><i class="fa fa-link" title="Go to OMIM (opens in new tab)"></i></a>
                             </h4>
 
                             <h4>MeSH terms (<i class="fa fa-chevron-down" id="expand_all_mesh">Expand all</i>)</h4>

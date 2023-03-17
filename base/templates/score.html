@@ -435,7 +435,8 @@
                                     <div class="cont">
                                         <p class="disease_name"> {{name_disease_A}} ({{disease_A}})
                                             <a href="{% url 'explore' disease_A %}" target="_blank"><i class="fa fa-eye" title="Explore (opens in new tab)"></i></a>
-                                            <a href="http://www.omim.org/{{disease_A}}" target="_blank"><i class="fa fa-link" title="Go to OMIM (opens in new tab)"></i></a>
+                                            <a href="{% url 'table' disease_A %}" target="_blank"><i class="fa fa-binoculars" title="See details (opens in new tab)"></i></a>
+                                            <a href="http://www.omim.org/entry/{{disease_A}}" target="_blank"><i class="fa fa-link" title="Go to OMIM (opens in new tab)"></i></a>
                                         </p>
                                         <h4>MeSH terms </h4>
                                         <div class="meshgroup">
@@ -468,7 +469,8 @@
                                     <div class="cont">
                                         <p class="disease_name"> {{name_disease_B}} ({{disease_B}})
                                             <a href="{% url 'explore' disease_B %}" target="_blank"><i class="fa fa-eye" title="Explore (opens in new tab)"></i></a>
-                                            <a href="http://www.omim.org/{{disease_B}}" target="_blank"><i class="fa fa-link" title="Go to OMIM (opens in new tab)"></i></a>
+                                            <a href="{% url 'table' disease_B %}" target="_blank"><i class="fa fa-binoculars" title="See details (opens in new tab)"></i></a>
+                                            <a href="http://www.omim.org/entry/{{disease_B}}" target="_blank"><i class="fa fa-link" title="Go to OMIM (opens in new tab)"></i></a>
                                         </p>
                                         <h4>MeSH terms</h4>
                                         

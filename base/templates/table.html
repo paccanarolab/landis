@@ -214,8 +214,8 @@
                                         <td style="text-align:left;"> 
                                             <a href="{% url 'table' omim %}" target="_self">{{omim}}</a> 
                                             <a href="{% url 'score' disease_omim omim %}" target="_blank"><i class="fa fa-compress" title="Compare {{disease_omim}} to {{omim}}."></i></a>
-                                            <a href=".{%url 'explore' omim %}" target="_blank"><i class="fa fa-eye"title="Explore this disease. Opens in new tab"></i></a>
-                                            <a href="http://www.omim.org/{{omim}}" target="_blank"><i class="fa fa-external-link" title="Go to OMIM. Opens in new tab"></i></a>
+                                            <a href="{%url 'explore' omim %}" target="_blank"><i class="fa fa-eye"title="Explore this disease. Opens in new tab"></i></a>
+                                            <a href="http://www.omim.org/entry/{{omim}}" target="_blank"><i class="fa fa-link" title="Go to OMIM. Opens in new tab"></i></a>
                                         </td>
                                         <td style="text-align:left;"> {{name}}</td>
                                         <td style="text-align:left;"> {{sim | floatformat:-2}} </td>
