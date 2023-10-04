@@ -482,7 +482,7 @@
                                                </div>
                                                <div class="meshcontent">
                                                {% for mesh in value %}
-                                                    <a class="button_link" target="_blank" href="{{mesh.1}}">{{mesh.0}}</a>
+                                                   <a class="button_link{% if mesh.1 in shared_mesh %} shared_elem{% endif %}" target="_blank" href="{{mesh.1}}">{{mesh.0}}</a>
                                                {% endfor %}
                                                </div>
                                            </div>
@@ -493,7 +493,7 @@
 										{% else %}
                                             <h4>Known proteins ({{ B_proteins|length }}) </h4>
 											{% for row in B_proteins %}
-											<a class="button_link" target="_blank" href="http://www.uniprot.org/uniprot/{{row}}">{{row}}</a>
+                                                <a class="button_link{% if row in shared_proteins %} shared_elem{% endif %}" target="_blank" href="http://www.uniprot.org/uniprot/{{row}}">{{row}}</a>
 											{%endfor%}
 				
 										{% endif %}

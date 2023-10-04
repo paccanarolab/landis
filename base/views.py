@@ -131,29 +131,38 @@ def __getDiseaseDetails(omim):
     name_disease = details.title 
     return {'mesh':sorted(mesh_terms.items()), 'proteins':proteins,  'name_disease':name_disease, 'disease':details.omim}
 
+
 def score(request, omim_A, omim_B):
-    #this will hold the return variable.
+    # this will hold the return variable.
     template_variables = defaultdict()
 
-    #details for disease B
+    # details for disease B
     details_A = __getDiseaseDetails(omim_A)
     template_variables['A_mesh'] = details_A['mesh']
     template_variables['A_proteins'] = details_A['proteins']
     template_variables['name_disease_A'] = details_A['name_disease']
     template_variables['disease_A'] = omim_A
 
-    #details for disease B
+    # details for disease B
     details_B = __getDiseaseDetails(omim_B)
     template_variables['B_mesh'] = details_B['mesh']
     template_variables['B_proteins'] = details_B['proteins']
     template_variables['name_disease_B'] = details_B['name_disease']
     template_variables['disease_B'] = omim_B
 
-    #get the similarity of both diseases
+    # shared proteins and meshterms to highlight
+    mesh_ids_A = set(uid for _, uid in details_A["mesh"])
+    mesh_ids_B = set(uid for _, uid in details_B["mesh"])
+
+    template_variables["shared_mesh"] = mesh_ids_A & mesh_ids_B
+    template_variables["shared_proteins"] = (set(details_A['proteins'])
+                                             & set(details_B['proteins']))
+
+    # get the similarity of both diseases
     sim = similarityscores.objects.get(omim1__exact = int(min(omim_A,omim_B)), omim2__exact = int(max(omim_A,omim_B)))
     template_variables['similarity'] = sim.similarity
     template_variables['percentile'] = ordinal(round(sim.percentile * 100, 1))
-    
+
     return render(request, 'score.html',template_variables)
 
 #########################
