@@ -152,12 +152,12 @@ def score(request, omim_A, omim_B):
 
     # shared proteins and meshterms to highlight
     mesh_ids_A = set()
-    for meshes in details_A["mesh"].values():
+    for meshes in details_A["mesh"]:
         for mesh in meshes:
             mesh_ids_A.add(mesh[1])
 
     mesh_ids_B = set()
-    for meshes in details_B["mesh"].values():
+    for meshes in details_B["mesh"]:
         for mesh in meshes:
             mesh_ids_B.add(mesh[1])
 
