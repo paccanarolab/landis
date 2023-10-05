@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 from .models import *
 from django.db.models import Q
 
@@ -12,11 +10,14 @@ import csv
 from collections import defaultdict
 from itertools import combinations
 
+
 def is_ajax(request):
     return request.headers.get("x-requested-with") == "XMLHttpRequest"
 
+
 def index(request):
     return render(request, 'index.html')
+
 
 #########################
 # Catch all             #
@@ -24,45 +25,54 @@ def index(request):
 def disclaimer(request):
     return render(request, 'ack.html')
 
+
 def error(request):
     return render(request, 'error.html',{'message':var})
+
 
 #########################
 # Get table             #
 #########################
-
 def download_table(request, disease=None):
-   
-    (table,name) = generateTable(disease)
+    (table, name) = generateTable(disease)
 
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="'+name+"_"+disease+'.csv"'
+    response['Content-Disposition'] = 'attachment; filename="' \
+        + name + "_" + disease + '.csv"'
 
     writer = csv.writer(response)
-    #table.append((mim,names[mim],s,proteins[mim]))
+    # table.append((mim,names[mim],s,proteins[mim]))
     for row in table:
         writer.writerow([row[0], row[1], row[2], ','.join(row[3])])
 
     return response
 
+
 def generateTable(disease):
-    #store the nodes that were found, to check for double loops.
-    direct_k_most = [(o2, float(s)) for o2,s in neighbourhood.objects.filter(omim1=disease).exclude(omim2=disease).order_by('-similarity').values_list('omim2', 'similarity')][:100]
+    # store the nodes that were found, to check for double loops.
+    direct_k_most = [
+        (o2, float(s)) for o2, s in neighbourhood.objects
+        .filter(omim1=disease)
+        .exclude(omim2=disease)
+        .order_by('-similarity').values_list('omim2', 'similarity')][:100]
 
     # we get the titles, for each disease
     all_names = dict(omim_details.objects.values_list('omim', 'title'))
     names = defaultdict()
-    for (mim,s) in direct_k_most:
+    for (mim, s) in direct_k_most:
         names[mim] = all_names[mim]
     name = all_names[int(disease)]
 
-    #we get the proteins for each disease
+    # we get the proteins for each disease
     proteins = defaultdict(list)
-    for (mim,s) in direct_k_most:
-        proteins[mim] = [i.uniprot_id for i in mimtoprot.objects.filter(omim__exact=mim)]
+    for (mim, s) in direct_k_most:
+        proteins[mim] = [
+            i.uniprot_id for i in mimtoprot.objects.filter(omim__exact=mim)]
 
-    #we fetch the similarities and percentiles.
-    #sim = similarityScores.objects.get(omim1__exact = min(omim_A,omim_B), omim2__exact = max(omim_A,omim_B))
+    # we fetch the similarities and percentiles.
+    # sim = similarityScores.objects.get(
+    #         omim1__exact = min(omim_A,omim_B),
+    #         omim2__exact = max(omim_A,omim_B))
 
     #build the final tuple
     table = list()
@@ -72,9 +82,14 @@ def generateTable(disease):
 
 
 def getTable(request, disease=None):
-    (table,name) = generateTable(disease)
-    #return (direct_k_most, table)
-    return render(request, 'table.html',{'table': table,'disease_name':name,'disease_omim':disease, 'num':len(table)})
+    (table, name) = generateTable(disease)
+    # return (direct_k_most, table)
+    return render(request, 'table.html',
+                  {'table': table,
+                   'disease_name': name,
+                   'disease_omim': disease,
+                   'num': len(table)})
+
 
 #########################
 # Result score          #
@@ -99,11 +114,31 @@ def ordinal(value):
 
     return ordval
 
+
 def __getDiseaseDetails(omim):
 
-    names = { 'A':'A - Anatomy', 'B':'B - Organisms', 'C':'C - Diseases', 'D':'D - Chemicals and Drugs', 'E':'E - Analytical, Diagnostic and Therapeutic Techniques and Equipment', 'F':'F - Psychiatry and Psychology', 'G':'G - Phenomena and Processes', 'H':'H - Disciplines and Occupations', 'I':'I - Anthropology, Education, Sociology and Social Phenomena', 'J':'J - Technology, Industry, Agriculture', 'K':'K - Humanities', 'L':'L - Information Science', 'M':'M - Named Groups', 'N':'N - Health Care', 'Z':'Z - Geographicals'} 
+    names = {
+        'A': 'A - Anatomy',
+        'B': 'B - Organisms',
+        'C': 'C - Diseases',
+        'D': 'D - Chemicals and Drugs',
+        'E': 'E - Analytical, Diagnostic and Therapeutic '
+             'Techniques and Equipment',
+        'F': 'F - Psychiatry and Psychology',
+        'G': 'G - Phenomena and Processes',
+        'H': 'H - Disciplines and Occupations',
+        'I': 'I - Anthropology, Education, Sociology and Social Phenomena',
+        'J': 'J - Technology, Industry, Agriculture',
+        'K': 'K - Humanities',
+        'L': 'L - Information Science',
+        'M': 'M - Named Groups',
+        'N': 'N - Health Care',
+        'Z': 'Z - Geographicals'
+    }
 
-    mesh_unique = (list(set([(i.mesh_term,i.identifier,i.coordinates) for i in mesh.objects.filter(omim__exact=omim)])))
+    mesh_unique = (list(set([
+        (i.mesh_term, i.identifier, i.coordinates) for i in
+        mesh.objects.filter(omim__exact=omim)])))
 
     mesh_terms = dict()
     found_terms = defaultdict(set)
@@ -116,20 +151,30 @@ def __getDiseaseDetails(omim):
                 mesh_terms[names[coord[0]]] = list()
 
             if i[0] not in found_terms[names[coord[0]]]:
-                #mesh_terms[names[coord[0]]].append((i[0], "http://www.nlm.nih.gov/cgi/mesh/2014/MB_cgi?mode=&term="+i[0].replace(' ', '+')+"&field=entry", i[1], i[2]))
-                mesh_terms[names[coord[0]]].append((i[0], "https://meshb.nlm.nih.gov/#/record/ui?ui="+i[1], i[1], i[2]))
+                mesh_terms[names[coord[0]]].append(
+                    (i[0],
+                     "https://meshb.nlm.nih.gov/#/record/ui?ui="+i[1],
+                     i[1],
+                     i[2])
+                )
                 found_terms[names[coord[0]]].add(i[0])
-                
-    for coord in mesh_terms:
-        mesh_terms[coord] = sorted(mesh_terms[coord], key=lambda x:x[0])
 
-    #get proteins
-    proteins = [i.uniprot_id for i in mimtoprot.objects.filter(omim__exact=omim)]
-    #get details
+    for coord in mesh_terms:
+        mesh_terms[coord] = sorted(mesh_terms[coord], key=lambda x: x[0])
+
+    # get proteins
+    proteins = [
+        i.uniprot_id for i in mimtoprot.objects.filter(omim__exact=omim)]
+    # get details
     details = get_object_or_404(omim_details, omim__exact=omim)
-    #with prefix
-    name_disease = details.title 
-    return {'mesh':sorted(mesh_terms.items()), 'proteins':proteins,  'name_disease':name_disease, 'disease':details.omim}
+    # with prefix
+    name_disease = details.title
+    return {
+        'mesh': sorted(mesh_terms.items()),
+        'proteins': proteins,
+        'name_disease': name_disease,
+        'disease': details.omim
+    }
 
 
 def score(request, omim_A, omim_B):
@@ -153,12 +198,12 @@ def score(request, omim_A, omim_B):
     # shared proteins and meshterms to highlight
     mesh_ids_A = set()
     for meshes in details_A["mesh"]:
-        for mesh in meshes:
+        for mesh in meshes[1]:
             mesh_ids_A.add(mesh[1])
 
     mesh_ids_B = set()
     for meshes in details_B["mesh"]:
-        for mesh in meshes:
+        for mesh in meshes[1]:
             mesh_ids_B.add(mesh[1])
 
     template_variables["shared_mesh"] = mesh_ids_A & mesh_ids_B
@@ -166,18 +211,20 @@ def score(request, omim_A, omim_B):
                                              & set(details_B['proteins']))
 
     # get the similarity of both diseases
-    sim = similarityscores.objects.get(omim1__exact = int(min(omim_A,omim_B)), omim2__exact = int(max(omim_A,omim_B)))
+    sim = similarityscores.objects.get(
+        omim1__exact=int(min(omim_A, omim_B)),
+        omim2__exact=int(max(omim_A, omim_B)))
     template_variables['similarity'] = sim.similarity
     template_variables['percentile'] = ordinal(round(sim.percentile * 100, 1))
 
-    return render(request, 'score.html',template_variables)
+    return render(request, 'score.html', template_variables)
+
 
 #########################
 # Explore neighbourhood #
 #########################
-
 def explore(request, disease):
-    #this will hold the return variable.
+    # this will hold the return variable.
     template_variables = defaultdict()
 
     details = get_object_or_404(omim_details, omim__exact=disease)
@@ -185,14 +232,25 @@ def explore(request, disease):
     url = reverse('neighbourhood')
     url_fill = reverse('fillnetwork')
 
-    #get the disease details.
-    #details for disease B
+    # get the disease details.
+    # details for disease B
     details = __getDiseaseDetails(disease)
-    template_variables = {'chosen_disease_mim': mim, 'chosen_disease_name':name, 'URL':url, 'URL_fill': url_fill, 'omim': disease, 'mesh':details['mesh'], 'proteins': details['proteins']}
-
+    template_variables = {
+        'chosen_disease_mim': mim,
+        'chosen_disease_name': name,
+        'URL': url,
+        'URL_fill': url_fill,
+        'omim': disease,
+        'mesh': details['mesh'],
+        'proteins': details['proteins']
+    }
     return render(request, 'explore.html', template_variables)
 
-def getNeighbourhood_ajax(request, disease=None, max_direct=10, max_indirect=5):
+
+def getNeighbourhood_ajax(request,
+                          disease=None,
+                          max_direct=10,
+                          max_indirect=5):
     #json prototype
     #nodes: [
             #{ data: { id: 'a', foo: 3, bar: 5, baz: 7 } },
@@ -205,7 +263,7 @@ def getNeighbourhood_ajax(request, disease=None, max_direct=10, max_indirect=5):
             #]
     #};
 
-    #quick check to verify the limits are not exceeded.
+    # quick check to verify the limits are not exceeded.
     if int(max_direct) > 50:
         max_direct = 50
     if int(max_indirect) > 20:
@@ -216,15 +274,13 @@ def getNeighbourhood_ajax(request, disease=None, max_direct=10, max_indirect=5):
     edges = list()
 
 
-    #store the nodes that were found, to check for double loops.
+    # store the nodes that were found, to check for double loops.
     direct_k_most = [(o2, float(s),lca) for o2,s,lca in neighbourhood.objects.filter(omim1=disease).exclude(omim2=disease).order_by('-similarity').values_list('omim2', 'similarity','lca')][:int(max_direct)]
 
     # we get the titles, for each disease
     titles = dict(omim_details.objects.values_list('omim', 'title'))
 
-    print(disease, int(disease) in titles)
-    
-    #append the pivot disease.
+    # append the pivot disease.
     nodes.append({'data': { 'id' :str(disease),'level': 230, 'colour': '#FFFFF', 'title': titles[int(disease)]},'classes':'centre'})
     d3['nodes'].append({'name':str(disease),'group':1})
 
