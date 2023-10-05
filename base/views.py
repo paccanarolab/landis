@@ -151,8 +151,15 @@ def score(request, omim_A, omim_B):
     template_variables['disease_B'] = omim_B
 
     # shared proteins and meshterms to highlight
-    mesh_ids_A = set(uid for _, uid in details_A["mesh"])
-    mesh_ids_B = set(uid for _, uid in details_B["mesh"])
+    mesh_ids_A = set()
+    for meshes in details_A["mesh"].values():
+        for mesh in meshes:
+            mesh_ids_A.add(mesh[1])
+
+    mesh_ids_B = set()
+    for meshes in details_B["mesh"].values():
+        for mesh in meshes:
+            mesh_ids_B.add(mesh[1])
 
     template_variables["shared_mesh"] = mesh_ids_A & mesh_ids_B
     template_variables["shared_proteins"] = (set(details_A['proteins'])
