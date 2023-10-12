@@ -153,7 +153,7 @@ def __getDiseaseDetails(omim):
             if i[0] not in found_terms[names[coord[0]]]:
                 mesh_terms[names[coord[0]]].append(
                     (i[0],
-                     "https://meshb.nlm.nih.gov/#/record/ui?ui="+i[1],
+                     "https://meshb.nlm.nih.gov/record/ui?ui="+i[1],
                      i[1],
                      i[2])
                 )
